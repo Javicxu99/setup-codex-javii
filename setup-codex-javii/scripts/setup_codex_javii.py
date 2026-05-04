@@ -12,7 +12,7 @@ from pathlib import Path
 
 
 ROOT_MARKERS = (".git", "pyproject.toml", "package.json", "Cargo.toml", "go.mod")
-PROFILES = ("default", "vehicle-3d")
+PROFILES = ("default",)
 
 
 @dataclass
@@ -103,7 +103,6 @@ def bootstrap(profile: str) -> Report:
     skill_root = script_path.parents[1]
     assets = skill_root / "assets"
     common = assets / "common"
-    profile_root = assets / "profiles" / profile
     target_root = find_project_root(Path.cwd())
 
     values = {
@@ -119,23 +118,42 @@ def bootstrap(profile: str) -> Report:
     (target_root / ".codex" / "skills").mkdir(parents=True, exist_ok=True)
     (target_root / "docs").mkdir(parents=True, exist_ok=True)
 
-    agents_template = common / "AGENTS.template.md"
-    project_context_template = common / "project-context.template.md"
-    if profile != "default":
-        profile_agents = profile_root / "AGENTS.template.md"
-        profile_context = profile_root / "project-context.template.md"
-        if profile_agents.exists():
-            agents_template = profile_agents
-        if profile_context.exists():
-            project_context_template = profile_context
-
     file_map = [
-        (agents_template, target_root / "AGENTS.md"),
+        (common / "AGENTS.template.md", target_root / "AGENTS.md"),
+        (common / "CHANGELOG.template.md", target_root / "CHANGELOG.md"),
         (common / "config.template.toml", target_root / ".codex" / "config.toml"),
-        (project_context_template, target_root / "docs" / "project-context.md"),
+        (common / "project-context.template.md", target_root / "docs" / "project-context.md"),
         (common / "architecture.template.md", target_root / "docs" / "architecture.md"),
         (common / "task-log.template.md", target_root / "docs" / "task-log.md"),
+        (
+            common / "codex-session-notes.template.md",
+            target_root / "docs" / "codex-session-notes.md",
+        ),
         (common / "README.codex.template.md", target_root / "docs" / "README.codex.md"),
+        (
+            assets / "prompts" / "archive-session.md",
+            target_root / ".codex" / "prompts" / "archive-session.md",
+        ),
+        (
+            assets / "prompts" / "release-check.md",
+            target_root / ".codex" / "prompts" / "release-check.md",
+        ),
+        (
+            assets / "github" / "PULL_REQUEST_TEMPLATE.md",
+            target_root / ".github" / "PULL_REQUEST_TEMPLATE.md",
+        ),
+        (
+            assets / "github" / "ISSUE_TEMPLATE" / "bug_report.md",
+            target_root / ".github" / "ISSUE_TEMPLATE" / "bug_report.md",
+        ),
+        (
+            assets / "github" / "ISSUE_TEMPLATE" / "change_request.md",
+            target_root / ".github" / "ISSUE_TEMPLATE" / "change_request.md",
+        ),
+        (
+            assets / "github" / "ISSUE_TEMPLATE" / "config.yml",
+            target_root / ".github" / "ISSUE_TEMPLATE" / "config.yml",
+        ),
         (
             assets / "skills" / "project-orientation" / "SKILL.md",
             target_root / ".codex" / "skills" / "project-orientation" / "SKILL.md",
@@ -149,21 +167,6 @@ def bootstrap(profile: str) -> Report:
             target_root / ".codex" / "skills" / "karpathy-guidelines" / "SKILL.md",
         ),
     ]
-
-    if profile == "vehicle-3d":
-        file_map.extend(
-            [
-                (profile_root / "data.template.md", target_root / "docs" / "data.md"),
-                (profile_root / "training.template.md", target_root / "docs" / "training.md"),
-                (profile_root / "evaluation.template.md", target_root / "docs" / "evaluation.md"),
-                (profile_root / "export-onnx.template.md", target_root / "docs" / "export-onnx.md"),
-                (profile_root / "tensorrt.template.md", target_root / "docs" / "tensorrt.md"),
-                (
-                    profile_root / "jetson-deployment.template.md",
-                    target_root / "docs" / "jetson-deployment.md",
-                ),
-            ]
-        )
 
     for source, destination in file_map:
         if not source.exists():
@@ -201,4 +204,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

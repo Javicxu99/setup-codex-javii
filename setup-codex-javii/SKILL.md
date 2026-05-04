@@ -1,47 +1,43 @@
 ---
 name: setup-codex-javii
-description: Inicializa un repositorio destino con el setup personal de Codex de Javii. Usar cuando el usuario quiera preparar un proyecto con AGENTS.md, .codex/config.toml, prompts, docs de contexto, perfiles default o vehicle-3d, y skills locales reutilizables.
+description: Initialize a target repository with Javii's universal Codex setup. Use when the user wants to prepare any project with AGENTS.md, .codex/config.toml, prompts, context docs, and reusable local skills before starting implementation.
 ---
 
 # setup-codex-javii
 
-Usar esta skill para inicializar un repo con una estructura Codex limpia, corta y mantenible.
+Use this skill to initialize a repository with a clean, compact, and maintainable Codex structure.
 
-## Procedimiento
+## Procedure
 
-1. Detectar la raiz del repo destino buscando `.git`, `pyproject.toml`, `package.json`, `Cargo.toml` o `go.mod`.
-2. Elegir perfil:
-   - `default` para proyectos generales.
-   - `vehicle-3d` para deteccion 3D camera-only de vehiculos.
-3. Ejecutar el script desde la raiz del proyecto destino:
+1. Detect the target repository root by looking for `.git`, `pyproject.toml`, `package.json`, `Cargo.toml`, or `go.mod`.
+2. Run the default bootstrap from the target project root:
 
 ```bash
 python path/to/setup-codex-javii/setup-codex-javii/scripts/setup_codex_javii.py --profile default
 ```
 
-o:
-
-```bash
-python path/to/setup-codex-javii/setup-codex-javii/scripts/setup_codex_javii.py --profile vehicle-3d
-```
-
-4. Crear o actualizar:
+3. Create or update:
    - `AGENTS.md`
+   - `CHANGELOG.md`
    - `.codex/config.toml`
    - `.codex/prompts/`
    - `.codex/skills/`
+   - `.github/`
    - `docs/`
-5. Copiar las skills locales:
+4. Enable official Codex history persistence with `history.persistence = "save-all"`.
+5. Create `docs/codex-session-notes.md` for reviewed summaries of important Codex conversations.
+6. Copy local skills:
    - `project-orientation`
    - `update-project-context`
    - `karpathy-guidelines`
-6. Crear backups `.bak` antes de sobrescribir cualquier archivo existente.
-7. Revisar el reporte final de archivos creados, archivos actualizados con backup, backups y proximos pasos.
+7. Create `.bak` backups before overwriting any existing file.
+8. Review the final report of created files, files updated with backup, backups, and next steps.
 
-## Reglas
+## Rules
 
-- No instalar dependencias.
-- No hacer commit salvo orden explicita.
-- Mantener `AGENTS.md` breve; el contexto largo va en `docs/`.
-- Priorizar una configuracion facil de revisar y transportar entre proyectos.
-
+- Do not install dependencies.
+- Do not commit unless explicitly asked.
+- Keep `AGENTS.md` brief; long context belongs in `docs/`.
+- Store curated conversation summaries in `docs/codex-session-notes.md`, not raw transcripts.
+- Keep the setup universal; domain-specific project context belongs in the generated `docs/`.
+- Keep GitHub traceability lightweight with changelog entries, issues, PRs, and version tags.

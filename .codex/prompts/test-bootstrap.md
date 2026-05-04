@@ -1,17 +1,17 @@
 # Test bootstrap
 
-Prueba el script de bootstrap en proyectos temporales.
+Test the bootstrap script in temporary projects.
 
-Pasos esperados:
+Expected steps:
 
-1. Crear `tmp/sample-default`.
-2. Inicializar git dentro.
-3. Ejecutar `python ../../setup-codex-javii/scripts/setup_codex_javii.py --profile default`.
-4. Ejecutarlo de nuevo y comprobar backups `.bak`.
-5. Crear `tmp/sample-vehicle-3d`.
-6. Inicializar git dentro.
-7. Ejecutar `python ../../setup-codex-javii/scripts/setup_codex_javii.py --profile vehicle-3d`.
-8. Resumir archivos creados, backups y cualquier fallo.
+1. Create `tmp/sample-default`.
+2. Initialize git inside it.
+3. Run `python ../../setup-codex-javii/scripts/setup_codex_javii.py --profile default`.
+4. Run it again and verify `.bak` backups.
+5. Verify that the expected universal Codex structure exists.
+6. Verify that `CHANGELOG.md` and `.github/` templates were generated.
+7. Confirm the second run created backups before overwriting files.
+8. Confirm that unsupported profiles are rejected by argparse.
+9. Summarize created files, backups, and any failures.
 
-No hagas commit.
-
+Do not commit.

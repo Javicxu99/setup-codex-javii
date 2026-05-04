@@ -1,22 +1,26 @@
 # setup-codex-javii
 
-Este repo es una skill bootstrapper para inicializar proyectos con mi setup personal de Codex.
+This repo is a Codex skill bootstrapper for initializing projects with my personal Codex setup.
 
-## Reglas de trabajo
+## Working Rules
 
-- Mantener cambios pequenos, claros y revisables.
-- No anadir dependencias externas.
-- No sobreingenierizar scripts, plantillas ni workflows.
-- No romper compatibilidad de la CLI sin documentarlo.
-- Validar `setup-codex-javii/scripts/setup_codex_javii.py` antes de cerrar cambios.
-- Mantener `AGENTS.md` y plantillas cortos, operativos y faciles de adaptar.
-- Respetar siempre backups `.bak` al escribir en proyectos destino.
-- Aplicar `.codex/skills/karpathy-guidelines` por defecto en tareas de codigo no triviales.
-- No hacer commit sin orden explicita.
+- Keep changes small, clear, and reviewable.
+- Do not add external dependencies.
+- Do not overengineer scripts, templates, or workflows.
+- Do not break CLI compatibility without documenting it.
+- Validate `setup-codex-javii/scripts/setup_codex_javii.py` before closing changes.
+- Keep `AGENTS.md` and templates short, operational, and easy to adapt.
+- Always respect `.bak` backups when writing into target projects.
+- Apply `.codex/skills/karpathy-guidelines` by default for non-trivial coding tasks.
+- After important Codex conversations, update `docs/codex-session-notes.md` or `docs/task-log.md`.
+- For release-relevant changes, update `CHANGELOG.md` and `VERSION`.
+- Use `.github/` templates to keep GitHub issues and PRs traceable.
+- Never paste raw secrets or unreviewed transcripts into tracked docs.
+- Do not commit unless explicitly asked.
 
 ## Done
 
-- La estructura esperada existe.
-- El script funciona con `--profile default` y `--profile vehicle-3d`.
-- Una segunda ejecucion crea backups antes de sobrescribir.
-- El README contiene comandos reproducibles.
+- The expected structure exists.
+- The script works with `--profile default`.
+- A second run creates backups before overwriting files.
+- The README contains reproducible commands.

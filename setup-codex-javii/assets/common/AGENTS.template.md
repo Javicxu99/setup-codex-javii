@@ -1,41 +1,40 @@
 # {{PROJECT_NAME}}
 
-Proyecto inicializado con el perfil Codex `{{PROFILE}}`.
+Project initialized with the Codex `{{PROFILE}}` profile.
 
-## Mision
+## Mission
 
-Ayudar a implementar, validar y documentar cambios de forma clara, incremental y revisable.
+Help implement, validate, and document changes in a clear, incremental, reviewable way.
 
-## Estructura
+## Structure
 
-- `.codex/config.toml`: configuracion local de Codex.
-- `.codex/prompts/`: prompts reutilizables del proyecto.
-- `.codex/skills/`: skills locales del proyecto.
-- `docs/project-context.md`: contexto principal del proyecto.
-- `docs/architecture.md`: estructura tecnica.
-- `docs/task-log.md`: cambios, decisiones y validaciones.
+- `.codex/config.toml`: local Codex configuration.
+- `.codex/prompts/`: reusable project prompts.
+- `.codex/skills/`: local project skills.
+- `docs/project-context.md`: main project context.
+- `docs/architecture.md`: technical structure.
+- `docs/task-log.md`: changes, decisions, and validations.
 
-## Reglas
+## Rules
 
-- Leer `docs/project-context.md` antes de tareas importantes.
-- Mantener cambios pequenos y directamente relacionados con la tarea.
-- No introducir dependencias, servicios o abstracciones sin necesidad clara.
-- No sobrescribir trabajo existente sin entenderlo.
-- Registrar decisiones importantes en `docs/task-log.md`.
+- Read `docs/project-context.md` before important tasks.
+- Keep changes small and directly related to the task.
+- Do not introduce dependencies, services, or abstractions without a clear need.
+- Do not overwrite existing work without understanding it.
+- Record important decisions in `docs/task-log.md`.
 
-## Validacion
+## Validation
 
-- Ejecutar las pruebas o checks disponibles.
-- Si no hay validacion automatica, explicar que se reviso manualmente.
-- No afirmar resultados no ejecutados.
+- Run available tests or checks.
+- If there is no automated validation, explain what was reviewed manually.
+- Do not claim results from checks that were not run.
 
 ## Done
 
-- El cambio cumple el objetivo acordado.
-- La validacion relevante esta ejecutada o justificada.
-- La documentacion de contexto queda actualizada si cambio el objetivo, arquitectura o flujo de trabajo.
+- The change satisfies the agreed objective.
+- Relevant validation has been run or explicitly justified.
+- Context documentation is updated if the objective, architecture, or workflow changed.
 
-## Respuesta
+## Response
 
-Responder con resumen breve, archivos tocados, validacion y riesgos pendientes.
-
+Respond with a brief summary, touched files, validation, and remaining risks.

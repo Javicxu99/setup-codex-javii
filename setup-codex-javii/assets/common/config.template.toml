@@ -6,4 +6,4 @@ model_reasoning_summary = "auto"
 model_verbosity = "medium"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
-
+history.persistence = "save-all"

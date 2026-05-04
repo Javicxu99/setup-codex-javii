@@ -1,13 +1,13 @@
 # Bootstrap this repo
 
-Actua como ingeniero senior y mejora este repo `setup-codex-javii` como bootstrapper personal para Codex.
+Act as a senior engineer and improve `setup-codex-javii` as a personal Codex bootstrapper.
 
-Objetivos:
+Goals:
 
-- Mantener la skill `setup-codex-javii` simple, reutilizable y sin dependencias externas.
-- Revisar que el script respeta backups antes de sobrescribir.
-- Mantener plantillas cortas, utiles y orientadas a accion.
-- Validar con proyectos temporales usando `--profile default` y `--profile vehicle-3d`.
+- Keep the `setup-codex-javii` skill simple, reusable, and dependency-free.
+- Verify that the script creates backups before overwriting files.
+- Keep templates short, useful, and action-oriented.
+- Validate with a temporary project using `--profile default`.
+- Keep `CHANGELOG.md`, `VERSION`, and GitHub templates aligned with release intent.
 
-No hagas commit salvo orden explicita.
-
+Do not commit unless explicitly asked.

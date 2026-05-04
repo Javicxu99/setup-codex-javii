@@ -2,20 +2,20 @@
 
 ## Intent
 
-`setup-codex-javii` debe ser un bootstrapper personal, facil de copiar entre proyectos y suficientemente simple para mantenerlo sin deuda.
+`setup-codex-javii` should be a personal bootstrapper that is easy to copy across projects and simple enough to maintain without accumulating debt.
 
 ## Decisions
 
-- Python estandar para evitar dependencias.
-- Plantillas en `assets/` para que la skill pueda copiar recursos sin cargar todo en contexto.
-- `AGENTS.md` corto y contexto largo en `docs/`.
-- Backups `.bak` antes de sobrescribir archivos existentes.
-- Perfil `vehicle-3d` separado para no contaminar proyectos generales.
+- Standard Python only, to avoid dependencies.
+- Templates live in `assets/` so the skill can copy resources without loading every file into context.
+- Keep `AGENTS.md` short and put long context in `docs/`.
+- Create `.bak` backups before overwriting existing files.
+- Keep the active bootstrap universal and domain-neutral.
 
 ## Non-Goals
 
-- No gestionar MCP.
-- No instalar herramientas.
-- No crear un framework de plugins.
-- No asumir una arquitectura unica para todos los proyectos.
-
+- Do not manage MCP configuration.
+- Do not install tools.
+- Do not create a plugin framework.
+- Do not assume a single architecture for every project.
+- Do not include domain-specific profiles in the active bootstrap until they are explicitly needed.

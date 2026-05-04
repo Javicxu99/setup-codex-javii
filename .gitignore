@@ -15,3 +15,7 @@ tmp/
 *.bak
 *.bak.*
 
+.codex/sessions/
+.codex/history/
+.codex/transcripts/
+docs/conversations/raw/

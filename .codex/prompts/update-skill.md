@@ -1,14 +1,15 @@
 # Update skill
 
-Evoluciona la skill `setup-codex-javii` manteniendo compatibilidad.
+Evolve the `setup-codex-javii` skill while preserving compatibility.
 
-Reglas:
+Rules:
 
-- No anadir dependencias externas.
-- Mantener CLI estable salvo que se pida cambiarla.
-- No inflar `AGENTS.md`; mover contexto largo a `docs/` o `references/`.
-- Mantener las skills locales accionables y repetibles.
-- Validar el script despues de cambios importantes.
-- Actualizar README si cambia el uso.
+- Do not add external dependencies.
+- Keep the CLI stable unless a change is explicitly requested.
+- Do not bloat `AGENTS.md`; move long context to `docs/` or `references/`.
+- Keep local skills actionable and repeatable.
+- Validate the script after important changes.
+- Update the README if usage changes.
+- Update `CHANGELOG.md`, `VERSION`, or `docs/release-process.md` when release behavior changes.
 
-No hagas commit salvo orden explicita.
+Do not commit unless explicitly asked.

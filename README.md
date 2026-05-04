@@ -1,51 +1,46 @@
 # setup-codex-javii
 
-Bootstrap personal para preparar proyectos con una configuracion estandar de Codex.
+Personal bootstrap repo for preparing projects with a clean, repeatable Codex setup.
 
-Este repositorio contiene una skill reutilizable llamada `setup-codex-javii`. Su objetivo es inicializar en cualquier repo destino una estructura minima, clara y repetible para trabajar con Codex: instrucciones de agente, configuracion, prompts, documentacion de contexto y skills locales.
+This repository contains a reusable Codex skill named `setup-codex-javii`. It initializes a target project with practical agent instructions, Codex configuration, prompts, project context docs, and local skills that can be customized per project.
 
-## Que genera
+## What It Generates
 
-Al ejecutar el script en un proyecto destino se crean:
+Running the bootstrap script in a target project creates:
 
 - `AGENTS.md`
+- `CHANGELOG.md`
 - `.codex/config.toml`
 - `.codex/prompts/`
 - `.codex/skills/`
+- `.github/`
 - `docs/project-context.md`
 - `docs/architecture.md`
 - `docs/task-log.md`
+- `docs/codex-session-notes.md`
 - `docs/README.codex.md`
 
-El perfil `vehicle-3d` anade documentacion especifica para deteccion 3D de vehiculos camera-only: datos, entrenamiento, evaluacion, exportacion ONNX, TensorRT y despliegue en Jetson.
+## Usage
 
-## Uso
-
-Puedes traer este repo desde GitHub y usarlo como base personal:
+Clone this repo from GitHub and use it as your personal default:
 
 ```bash
 git clone https://github.com/Javicxu99/setup-codex-javii.git
 ```
 
-Desde la raiz de un proyecto destino:
+From the root of a target project:
 
 ```bash
 python path/to/setup-codex-javii/setup-codex-javii/scripts/setup_codex_javii.py --profile default
 ```
 
-Para proyectos camera-only de deteccion 3D de vehiculos:
+The script detects the project root by looking for `.git`, `pyproject.toml`, `package.json`, `Cargo.toml`, or `go.mod`.
 
-```bash
-python path/to/setup-codex-javii/setup-codex-javii/scripts/setup_codex_javii.py --profile vehicle-3d
-```
+If a destination file already exists, the script creates a backup first: `.bak`, `.bak.1`, `.bak.2`, and so on.
 
-El script detecta la raiz del proyecto buscando `.git`, `pyproject.toml`, `package.json`, `Cargo.toml` o `go.mod`.
+## Generated Codex Config
 
-Si un archivo ya existe, no lo pisa en silencio: primero crea un backup `.bak`, `.bak.1`, `.bak.2`, etc.
-
-## Configuracion generada
-
-La configuracion base de Codex usa:
+The generated Codex configuration uses:
 
 ```toml
 model = "gpt-5.5"
@@ -58,19 +53,39 @@ approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 ```
 
-No incluye MCP ni configuracion avanzada por defecto.
+No MCP or advanced configuration is included by default.
 
-## Skills locales incluidas
+## Codex History
 
-- `project-orientation`: orientacion previa antes de una tarea importante, sin modificar codigo.
-- `update-project-context`: actualizacion de contexto y log despues de cambios relevantes.
-- `karpathy-guidelines`: adaptacion breve de principios de trabajo inspirados por `forrestchang/andrej-karpathy-skills`.
+Codex session history is handled by Codex itself through `history.persistence = "save-all"`. Raw Codex state normally lives under the user's Codex home directory, such as `~/.codex`, not inside the project repository.
 
-Este repo tambien incluye `karpathy-guidelines` en `.codex/skills/karpathy-guidelines/` para poder seleccionarla directamente desde Codex mientras trabajas en este proyecto.
+Use `docs/codex-session-notes.md` for reviewed, human-readable summaries of important Codex conversations. Use `.codex/prompts/archive-session.md` when a conversation creates durable project context, decisions, operating assumptions, follow-ups, or risks.
 
-## Instalar karpathy-guidelines globalmente
+Raw transcript exports are not created by default. If you manually export raw sessions into the project, keep them out of Git; `.gitignore` excludes common local raw-export paths.
 
-Para usar la skill en todos tus chats/proyectos de Codex, copia la skill al directorio global de Codex.
+## GitHub Traceability
+
+This repo is prepared for long-term GitHub traceability:
+
+- `VERSION` stores the current bootstrap version.
+- `CHANGELOG.md` records user-facing changes by version.
+- `docs/release-process.md` documents the release and tagging flow.
+- `.github/` contains issue and pull request templates.
+- `.codex/prompts/release-check.md` helps review a version before publishing.
+
+Generated projects also receive `CHANGELOG.md` and GitHub issue/PR templates so future work can be tracked from the start.
+
+## Included Local Skills
+
+- `project-orientation`: read context and map the affected area before important work.
+- `update-project-context`: update living project docs after meaningful changes.
+- `karpathy-guidelines`: Codex-oriented adaptation of principles inspired by `forrestchang/andrej-karpathy-skills`.
+
+This repo also includes `karpathy-guidelines` in `.codex/skills/karpathy-guidelines/` so it can be selected directly while working on this project.
+
+## Install `karpathy-guidelines` Globally
+
+To use the skill across Codex chats and projects, copy it to the global Codex skills directory.
 
 PowerShell:
 
@@ -86,17 +101,17 @@ mkdir -p ~/.codex/skills/karpathy-guidelines
 cp .codex/skills/karpathy-guidelines/SKILL.md ~/.codex/skills/karpathy-guidelines/SKILL.md
 ```
 
-## Uso con Codex en VS Code
+## Working With Codex In VS Code
 
-1. Copia o referencia esta skill desde tu entorno de Codex.
-2. Abre el proyecto destino en VS Code.
-3. Ejecuta el script con el perfil adecuado.
-4. Pide a Codex que lea `AGENTS.md` y `docs/project-context.md` antes de tareas relevantes.
-5. Usa las skills locales cuando necesites orientacion, actualizacion de contexto o disciplina de implementacion.
+1. Clone or reference this repo from your Codex environment.
+2. Open the target project in VS Code.
+3. Run the bootstrap script with the default profile.
+4. Ask Codex to read `AGENTS.md` and `docs/project-context.md` before important tasks.
+5. Use the local skills for orientation, context updates, and implementation discipline.
 
-## Validacion local
+## Local Validation
 
-Desde la raiz de este repo:
+From this repo root:
 
 ```bash
 mkdir tmp/sample-default
@@ -106,24 +121,17 @@ python ../../setup-codex-javii/scripts/setup_codex_javii.py --profile default
 python ../../setup-codex-javii/scripts/setup_codex_javii.py --profile default
 ```
 
-Comprueba que se crean backups en la segunda ejecucion.
+The second run should create `.bak` backups.
 
-Para el perfil `vehicle-3d`:
+## Release Commit
 
-```bash
-mkdir tmp/sample-vehicle-3d
-cd tmp/sample-vehicle-3d
-git init
-python ../../setup-codex-javii/scripts/setup_codex_javii.py --profile vehicle-3d
-```
-
-## Primer commit
-
-Revisa los archivos generados antes de commitear.
+Review generated changes before committing.
 
 ```bash
 git status
 git add .
-git commit -m "Initial Codex bootstrap skill"
-git push -u origin main
+git commit -m "1.0.1 Make bootstrap universal with history and traceability"
+git tag -a v1.0.1 -m "v1.0.1"
+git push
+git push origin v1.0.1
 ```

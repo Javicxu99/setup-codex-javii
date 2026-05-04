@@ -1,31 +1,32 @@
 ---
 name: update-project-context
-description: Actualizar la documentacion viva del proyecto despues de cambios importantes. Usar cuando cambie el objetivo, arquitectura, flujo principal, decisiones tecnicas o validaciones relevantes.
+description: Update living project documentation after important changes. Use when the objective, architecture, main workflow, technical decisions, or relevant validations change.
 ---
 
 # update-project-context
 
-Usar despues de cambios importantes.
+Use after important changes.
 
-## Procedimiento
+## Procedure
 
-1. Actualizar `docs/project-context.md` si cambio:
-   - objetivo
-   - alcance
-   - arquitectura
-   - entradas o salidas
-   - despliegue
-   - riesgos
-   - estado actual
-2. Actualizar `docs/task-log.md` con:
-   - fecha
-   - cambio realizado
-   - decision tomada
-   - validacion ejecutada
-   - riesgos pendientes
-3. Mantener entradas breves y trazables.
+1. Update `docs/project-context.md` if any of these changed:
+   - objective
+   - scope
+   - architecture
+   - inputs or outputs
+   - deployment
+   - risks
+   - current status
+2. Update `docs/task-log.md` with:
+   - date
+   - change made
+   - decision taken
+   - validation run
+   - remaining risks
+3. Update `docs/codex-session-notes.md` when a Codex conversation created reusable context, decisions, operating assumptions, follow-ups, or risks.
+4. Update `CHANGELOG.md` when the change affects behavior, compatibility, release notes, or user-facing setup.
+5. Keep entries brief and traceable.
 
-## Regla
+## Rule
 
-No inventar resultados no validados. Si una validacion no se ejecuto, indicarlo de forma explicita.
-
+Do not invent unvalidated results. If a validation was not run, say so explicitly. Do not paste raw secrets or unreviewed transcripts into tracked docs.

@@ -100,10 +100,16 @@ def write_rendered_file(
 
 def bootstrap(profile: str) -> Report:
     script_path = Path(__file__).resolve()
-    skill_root = script_path.parents[1]
-    assets = skill_root / "assets"
+    bootstrap_skill_root = script_path.parents[1]
+    assets = bootstrap_skill_root / "assets"
     common = assets / "common"
     target_root = find_project_root(Path.cwd())
+
+    if not (bootstrap_skill_root / "SKILL.md").exists() or not assets.exists():
+        raise RuntimeError(
+            "Could not locate the setup-codex-javii skill assets. "
+            "Run the script from a complete clone of this repository."
+        )
 
     values = {
         "PROJECT_NAME": target_root.name,

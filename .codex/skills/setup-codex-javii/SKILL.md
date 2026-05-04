@@ -13,7 +13,7 @@ Use this skill to initialize a repository with a clean, compact, and maintainabl
 2. Run the default bootstrap from the target project root:
 
 ```bash
-python path/to/setup-codex-javii/setup-codex-javii/scripts/setup_codex_javii.py --profile default
+python path/to/setup-codex-javii/.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py --profile default
 ```
 
 3. Create or update:

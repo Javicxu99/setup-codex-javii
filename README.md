@@ -4,6 +4,8 @@ Personal bootstrap repo for preparing projects with a clean, repeatable Codex se
 
 This repository contains a reusable Codex skill named `setup-codex-javii`. It initializes a target project with practical agent instructions, Codex configuration, prompts, project context docs, and local skills that can be customized per project.
 
+The bootstrap skill itself lives in `.codex/skills/setup-codex-javii/` so the repository follows the same Codex-native layout it generates for other projects: configuration, prompts, and selectable local skills all live under `.codex/`.
+
 ## What It Generates
 
 Running the bootstrap script in a target project creates:
@@ -31,7 +33,7 @@ git clone https://github.com/Javicxu99/setup-codex-javii.git
 From the root of a target project:
 
 ```bash
-python path/to/setup-codex-javii/setup-codex-javii/scripts/setup_codex_javii.py --profile default
+python path/to/setup-codex-javii/.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py --profile default
 ```
 
 The script detects the project root by looking for `.git`, `pyproject.toml`, `package.json`, `Cargo.toml`, or `go.mod`.
@@ -117,8 +119,8 @@ From this repo root:
 mkdir tmp/sample-default
 cd tmp/sample-default
 git init
-python ../../setup-codex-javii/scripts/setup_codex_javii.py --profile default
-python ../../setup-codex-javii/scripts/setup_codex_javii.py --profile default
+python ../../.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py --profile default
+python ../../.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py --profile default
 ```
 
 The second run should create `.bak` backups.
@@ -130,8 +132,8 @@ Review generated changes before committing.
 ```bash
 git status
 git add .
-git commit -m "1.0.1 Make bootstrap universal with history and traceability"
-git tag -a v1.0.1 -m "v1.0.1"
+git commit -m "1.0.2 Move bootstrap skill into Codex native layout"
+git tag -a v1.0.2 -m "v1.0.2"
 git push
-git push origin v1.0.1
+git push origin v1.0.2
 ```

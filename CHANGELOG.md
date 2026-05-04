@@ -8,6 +8,12 @@ This project follows semantic versioning for Git tags and GitHub releases.
 
 - No unreleased changes.
 
+## [1.0.2] - 2026-05-04
+
+- Moved the main bootstrap skill into `.codex/skills/setup-codex-javii/` for a more direct Codex project layout.
+- Kept bootstrap assets, scripts, prompts, and references inside the Codex-local skill package.
+- Updated usage docs and validation prompts to use the Codex-native path.
+
 ## [1.0.1] - 2026-05-04
 
 - Converted the bootstrap content to English.

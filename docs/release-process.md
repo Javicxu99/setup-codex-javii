@@ -25,10 +25,10 @@ Use this process when publishing a new version of `setup-codex-javii`.
 ```bash
 git status
 git add .
-git commit -m "1.0.1 Make bootstrap universal with history and traceability"
-git tag -a v1.0.1 -m "v1.0.1"
+git commit -m "1.0.2 Move bootstrap skill into Codex native layout"
+git tag -a v1.0.2 -m "v1.0.2"
 git push
-git push origin v1.0.1
+git push origin v1.0.2
 ```
 
 After pushing, create a GitHub Release from the tag and paste the matching `CHANGELOG.md` entry.

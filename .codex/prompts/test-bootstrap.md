@@ -6,7 +6,7 @@ Expected steps:
 
 1. Create `tmp/sample-default`.
 2. Initialize git inside it.
-3. Run `python ../../setup-codex-javii/scripts/setup_codex_javii.py --profile default`.
+3. Run `python ../../.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py --profile default`.
 4. Run it again and verify `.bak` backups.
 5. Verify that the expected universal Codex structure exists.
 6. Verify that `CHANGELOG.md` and `.github/` templates were generated.

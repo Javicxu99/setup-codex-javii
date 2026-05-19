@@ -19,8 +19,10 @@ Running the bootstrap script in a target project creates:
 - `docs/project-context.md`
 - `docs/architecture.md`
 - `docs/task-log.md`
+- `docs/codegraph.md`
 - `docs/codex-session-notes.md`
 - `docs/README.codex.md`
+- a managed `.gitignore` block for local Codex and CodeGraph state
 
 ## Usage
 
@@ -31,6 +33,14 @@ git clone https://github.com/Javicxu99/setup-codex-javii.git
 ```
 
 From the root of a target project:
+
+```powershell
+C:\path\to\setup-codex-javii\iniciar-setup.cmd
+```
+
+This launcher runs the default bootstrap and offers optional CodeGraph setup.
+
+You can also call the Python script directly:
 
 ```bash
 python path/to/setup-codex-javii/.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py --profile default
@@ -57,6 +67,28 @@ sandbox_mode = "workspace-write"
 
 No MCP or advanced configuration is included by default.
 
+## Optional CodeGraph Support
+
+Generated projects are ready to use CodeGraph as an optional code understanding layer. CodeGraph builds a local knowledge graph for symbols, relationships, callers, callees, impact analysis, and file structure.
+
+Source: https://github.com/colbymchenry/codegraph
+
+Official CodeGraph setup is environment-level first, project-level second:
+
+```bash
+npx @colbymchenry/codegraph
+```
+
+Then restart the agent if the installer asks for it and initialize each target project from its root:
+
+```bash
+codegraph init -i
+```
+
+The bootstrap does not install CodeGraph, run `npx`, or hard-code MCP configuration. It prepares the project with `docs/codegraph.md`, `.codex/prompts/codegraph-orient.md`, and `.codex/skills/codegraph-orientation/` so agents can use graph context when `.codegraph/` exists and fall back to normal repo search when it does not.
+
+The generated `.gitignore` block keeps `.codegraph/` and optional raw Codex state out of Git.
+
 ## Codex History
 
 Codex session history is handled by Codex itself through `history.persistence = "save-all"`. Raw Codex state normally lives under the user's Codex home directory, such as `~/.codex`, not inside the project repository.
@@ -80,6 +112,7 @@ Generated projects also receive `CHANGELOG.md` and GitHub issue/PR templates so 
 ## Included Local Skills
 
 - `project-orientation`: read context and map the affected area before important work.
+- `codegraph-orientation`: use optional CodeGraph context for broad code understanding tasks.
 - `update-project-context`: update living project docs after meaningful changes.
 - `karpathy-guidelines`: Codex-oriented adaptation of principles inspired by `forrestchang/andrej-karpathy-skills`.
 
@@ -132,8 +165,8 @@ Review generated changes before committing.
 ```bash
 git status
 git add .
-git commit -m "1.0.2 Move bootstrap skill into Codex native layout"
-git tag -a v1.0.2 -m "v1.0.2"
+git commit -m "1.0.3 Add optional CodeGraph support"
+git tag -a v1.0.3 -m "v1.0.3"
 git push
-git push origin v1.0.2
+git push origin v1.0.3
 ```

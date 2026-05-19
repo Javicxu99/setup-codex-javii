@@ -11,8 +11,10 @@ Use at the start of an important task.
 
 1. Read `AGENTS.md`.
 2. Read `docs/project-context.md`.
-3. Review relevant files in `docs/` based on the task.
-4. Identify the affected layer:
+3. Read `docs/codegraph.md` if it exists.
+4. If `.codegraph/` exists and CodeGraph tools are available, use graph context to narrow relevant symbols, dependencies, and impact.
+5. Review relevant files in `docs/` based on the task.
+6. Identify the affected layer:
    - data
    - training
    - evaluation
@@ -20,7 +22,7 @@ Use at the start of an important task.
    - optimization
    - deployment
    - frontend/backend if applicable
-5. Summarize:
+7. Summarize:
    - current state
    - relevant constraints
    - involved files

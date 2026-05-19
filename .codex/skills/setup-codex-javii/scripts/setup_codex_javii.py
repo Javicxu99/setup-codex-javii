@@ -13,6 +13,17 @@ from pathlib import Path
 
 ROOT_MARKERS = (".git", "pyproject.toml", "package.json", "Cargo.toml", "go.mod")
 PROFILES = ("default",)
+MANAGED_GITIGNORE_BLOCK = """# setup-codex-javii managed local state
+.codegraph/
+.codex/sessions/
+.codex/history/
+.codex/transcripts/
+docs/conversations/raw/
+tmp/
+*.bak
+*.bak.*
+# end setup-codex-javii managed local state
+"""
 
 
 @dataclass
@@ -98,6 +109,33 @@ def write_rendered_file(
     destination.write_text(content, encoding="utf-8", newline="\n")
 
 
+def ensure_gitignore_entries(target_root: Path, report: Report) -> None:
+    destination = target_root / ".gitignore"
+    block = MANAGED_GITIGNORE_BLOCK
+
+    if not destination.exists():
+        destination.write_text(block, encoding="utf-8", newline="\n")
+        report.created.append(destination)
+        return
+
+    existing = destination.read_text(encoding="utf-8")
+    if block in existing:
+        report.skipped.append(destination)
+        return
+
+    backup = next_backup_path(destination)
+    shutil.copy2(destination, backup)
+    report.backups.append(backup)
+    report.updated.append(destination)
+
+    separator = "\n\n" if existing.strip() else ""
+    destination.write_text(
+        existing.rstrip() + separator + block,
+        encoding="utf-8",
+        newline="\n",
+    )
+
+
 def bootstrap(profile: str) -> Report:
     script_path = Path(__file__).resolve()
     bootstrap_skill_root = script_path.parents[1]
@@ -131,6 +169,7 @@ def bootstrap(profile: str) -> Report:
         (common / "project-context.template.md", target_root / "docs" / "project-context.md"),
         (common / "architecture.template.md", target_root / "docs" / "architecture.md"),
         (common / "task-log.template.md", target_root / "docs" / "task-log.md"),
+        (common / "codegraph.template.md", target_root / "docs" / "codegraph.md"),
         (
             common / "codex-session-notes.template.md",
             target_root / "docs" / "codex-session-notes.md",
@@ -143,6 +182,10 @@ def bootstrap(profile: str) -> Report:
         (
             assets / "prompts" / "release-check.md",
             target_root / ".codex" / "prompts" / "release-check.md",
+        ),
+        (
+            assets / "prompts" / "codegraph-orient.md",
+            target_root / ".codex" / "prompts" / "codegraph-orient.md",
         ),
         (
             assets / "github" / "PULL_REQUEST_TEMPLATE.md",
@@ -172,12 +215,18 @@ def bootstrap(profile: str) -> Report:
             assets / "skills" / "karpathy-guidelines" / "SKILL.md",
             target_root / ".codex" / "skills" / "karpathy-guidelines" / "SKILL.md",
         ),
+        (
+            assets / "skills" / "codegraph-orientation" / "SKILL.md",
+            target_root / ".codex" / "skills" / "codegraph-orientation" / "SKILL.md",
+        ),
     ]
 
     for source, destination in file_map:
         if not source.exists():
             raise RuntimeError(f"Missing asset template: {source}")
         write_rendered_file(source, destination, values, report)
+
+    ensure_gitignore_entries(target_root, report)
 
     return report
 
@@ -204,6 +253,7 @@ def main() -> int:
     print("Recommended next steps:")
     print("  - Review AGENTS.md and docs/project-context.md.")
     print("  - Add project-specific details to docs/architecture.md and docs/task-log.md.")
+    print("  - Run codegraph init -i if you want optional graph-based code orientation.")
     print("  - Run your normal validation before committing generated files.")
     return 0
 

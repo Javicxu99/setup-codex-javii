@@ -8,6 +8,13 @@ This project follows semantic versioning for Git tags and GitHub releases.
 
 - No unreleased changes.
 
+## [1.0.3] - 2026-05-19
+
+- Added optional CodeGraph-ready documentation, prompt, and local orientation skill.
+- Added target-project `.gitignore` management for local graph, transcript, temp, and backup artifacts.
+- Kept CodeGraph setup user-controlled with `codegraph init -i`; no dependencies are installed by the bootstrap.
+- Added `iniciar-setup` Windows launcher and `comando.md` as a concise command cheat sheet for the repo.
+
 ## [1.0.2] - 2026-05-04
 
 - Moved the main bootstrap skill into `.codex/skills/setup-codex-javii/` for a more direct Codex project layout.

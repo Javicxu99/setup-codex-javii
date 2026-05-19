@@ -24,8 +24,9 @@ Use after important changes.
    - validation run
    - remaining risks
 3. Update `docs/codex-session-notes.md` when a Codex conversation created reusable context, decisions, operating assumptions, follow-ups, or risks.
-4. Update `CHANGELOG.md` when the change affects behavior, compatibility, release notes, or user-facing setup.
-5. Keep entries brief and traceable.
+4. Update `docs/codegraph.md` only if the project's CodeGraph workflow or local graph assumptions changed.
+5. Update `CHANGELOG.md` when the change affects behavior, compatibility, release notes, or user-facing setup.
+6. Keep entries brief and traceable.
 
 ## Rule
 

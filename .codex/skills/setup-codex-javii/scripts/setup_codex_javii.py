@@ -19,6 +19,8 @@ MANAGED_GITIGNORE_BLOCK = """# setup-codex-javii managed local state
 .codex/history/
 .codex/transcripts/
 docs/conversations/raw/
+.claude/settings.local.json
+.claude/session-log.txt
 tmp/
 *.bak
 *.bak.*
@@ -160,6 +162,11 @@ def bootstrap(profile: str) -> Report:
 
     (target_root / ".codex" / "prompts").mkdir(parents=True, exist_ok=True)
     (target_root / ".codex" / "skills").mkdir(parents=True, exist_ok=True)
+    (target_root / ".claude" / "skills" / "karpathy").mkdir(parents=True, exist_ok=True)
+    (target_root / ".claude" / "skills" / "caveman").mkdir(parents=True, exist_ok=True)
+    (target_root / ".claude" / "skills" / "codegraph").mkdir(parents=True, exist_ok=True)
+    (target_root / ".claude" / "skills" / "archive").mkdir(parents=True, exist_ok=True)
+    (target_root / ".claude" / "skills" / "release-check").mkdir(parents=True, exist_ok=True)
     (target_root / "docs").mkdir(parents=True, exist_ok=True)
 
     file_map = [
@@ -219,6 +226,35 @@ def bootstrap(profile: str) -> Report:
             assets / "skills" / "codegraph-orientation" / "SKILL.md",
             target_root / ".codex" / "skills" / "codegraph-orientation" / "SKILL.md",
         ),
+        # Claude Code infrastructure
+        (
+            assets / "claude" / "CLAUDE.template.md",
+            target_root / "CLAUDE.md",
+        ),
+        (
+            assets / "claude" / "settings.template.json",
+            target_root / ".claude" / "settings.json",
+        ),
+        (
+            assets / "claude" / "skills" / "karpathy" / "SKILL.md",
+            target_root / ".claude" / "skills" / "karpathy" / "SKILL.md",
+        ),
+        (
+            assets / "claude" / "skills" / "caveman" / "SKILL.md",
+            target_root / ".claude" / "skills" / "caveman" / "SKILL.md",
+        ),
+        (
+            assets / "claude" / "skills" / "codegraph" / "SKILL.md",
+            target_root / ".claude" / "skills" / "codegraph" / "SKILL.md",
+        ),
+        (
+            assets / "claude" / "skills" / "archive" / "SKILL.md",
+            target_root / ".claude" / "skills" / "archive" / "SKILL.md",
+        ),
+        (
+            assets / "claude" / "skills" / "release-check" / "SKILL.md",
+            target_root / ".claude" / "skills" / "release-check" / "SKILL.md",
+        ),
     ]
 
     for source, destination in file_map:
@@ -245,7 +281,7 @@ def main() -> int:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
 
-    print("Codex bootstrap complete.")
+    print("Bootstrap complete (Codex + Claude Code).")
     print_paths("Files created", report.created)
     print_paths("Files updated with backup", report.updated)
     print_paths("Files skipped", report.skipped)
@@ -253,7 +289,9 @@ def main() -> int:
     print("Recommended next steps:")
     print("  - Review AGENTS.md and docs/project-context.md.")
     print("  - Add project-specific details to docs/architecture.md and docs/task-log.md.")
-    print("  - Run codegraph init -i if you want optional graph-based code orientation.")
+    print("  - Review CLAUDE.md and .claude/settings.json for Claude Code configuration.")
+    print("  - Claude skills available: /karpathy /caveman /codegraph /archive /release-check")
+    print("  - Run codegraph init -i and see .claude/skills/codegraph/SKILL.md for optional graph orientation.")
     print("  - Run your normal validation before committing generated files.")
     return 0
 

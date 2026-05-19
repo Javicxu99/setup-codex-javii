@@ -20,3 +20,5 @@ tmp/
 .codex/history/
 .codex/transcripts/
 docs/conversations/raw/
+.claude/settings.local.json
+.claude/session-log.txt

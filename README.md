@@ -10,6 +10,7 @@ The bootstrap skill itself lives in `.codex/skills/setup-codex-javii/` so the re
 
 Running the bootstrap script in a target project creates:
 
+**Codex infrastructure:**
 - `AGENTS.md`
 - `CHANGELOG.md`
 - `.codex/config.toml`
@@ -22,7 +23,17 @@ Running the bootstrap script in a target project creates:
 - `docs/codegraph.md`
 - `docs/codex-session-notes.md`
 - `docs/README.codex.md`
-- a managed `.gitignore` block for local Codex and CodeGraph state
+
+**Claude Code infrastructure:**
+- `CLAUDE.md` - always-on context with embedded Karpathy guidelines
+- `.claude/settings.json` - model: claude-sonnet-4-6, effortLevel: high, shared safety denies
+- `.claude/skills/karpathy/SKILL.md` - `/karpathy` re-anchor discipline
+- `.claude/skills/caveman/SKILL.md` - `/caveman` maximum-simplicity mode
+- `.claude/skills/codegraph/SKILL.md` - `/codegraph` orientation with MCP setup
+- `.claude/skills/archive/SKILL.md` - `/archive` session archiving
+- `.claude/skills/release-check/SKILL.md` - `/release-check` pre-release checklist
+
+**Plus:** a managed `.gitignore` block for local Codex, CodeGraph, and Claude state
 
 ## Usage
 
@@ -66,6 +77,18 @@ sandbox_mode = "workspace-write"
 ```
 
 No MCP or advanced configuration is included by default.
+
+## Claude Code Support
+
+Generated projects are ready to use Claude Code out of the box. The bootstrap creates:
+
+- **`CLAUDE.md`** - loaded on every conversation. Contains project structure, Karpathy guidelines, and a reference to available Claude Code skills.
+- **`.claude/settings.json`** - configures claude-sonnet-4-6 with `effortLevel: high` and shared safety denies for local secrets.
+- **Claude Code skills** in `.claude/skills/`: `/karpathy`, `/caveman`, `/codegraph`, `/archive`, `/release-check`.
+
+Claude Code sessions auto-save to `~/.claude/projects/`. Use `/archive` to create human-readable curated summaries in `docs/codex-session-notes.md`.
+
+The Stop hook in `.claude/settings.json` logs session timestamps to `.claude/session-log.txt` (local, excluded from git).
 
 ## Optional CodeGraph Support
 
@@ -165,8 +188,8 @@ Review generated changes before committing.
 ```bash
 git status
 git add .
-git commit -m "1.0.3 Add optional CodeGraph support"
-git tag -a v1.0.3 -m "v1.0.3"
+git commit -m "2.0.0 Add Claude Code infrastructure"
+git tag -a v2.0.0 -m "v2.0.0"
 git push
-git push origin v1.0.3
+git push origin v2.0.0
 ```

@@ -9,10 +9,11 @@ Read `docs/project-context.md` (if it exists) for full context before important 
 
 - `AGENTS.md` - working rules for Codex
 - `.codex/config.toml` - Codex configuration (model, reasoning, history)
-- `.codex/prompts/` - reusable Codex prompts (archive-session, codegraph-orient, release-check)
-- `.codex/skills/` - local Codex skills (karpathy-guidelines, codegraph-orientation, setup-codex-javii)
-- `.claude/settings.json` - Claude Code configuration (model: sonnet-4-6, effort: high, shared safety denies)
-- `.claude/skills/` - Claude Code skills (karpathy, caveman, codegraph, archive, release-check)
+- `.codex/prompts/` - reusable Codex prompts (archive-session, codebase-memory-orient, release-check)
+- `.codex/skills/` - local Codex skills (karpathy-guidelines, codebase-memory, ponytail, setup-codex-javii)
+- `.claude/settings.json` - Claude Code configuration (model: sonnet-5, bypassPermissions, ponytail plugin)
+- `.claude/skills/` - Claude Code skills (karpathy, caveman, codebase-memory, ponytail, archive, release-check)
+- `.mcp.json` - MCP server config (codebase-memory-mcp)
 - `.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py` - main bootstrap script (Python, no deps)
 - `.codex/skills/setup-codex-javii/assets/` - templates for generated project files
 
@@ -52,7 +53,8 @@ These principles apply to all non-trivial coding work in this session.
 
 - `/karpathy` - re-anchor to full karpathy discipline (useful after long conversations drift)
 - `/caveman` - switch to maximum-simplicity brutalist mode (no abstractions, just make it work)
-- `/codegraph` - orient using CodeGraph when `.codegraph/` exists; includes MCP setup instructions
+- `/codebase-memory` - orient using Codebase Memory MCP knowledge graph before broad tasks
+- `/ponytail` - activate lazy-dev mode (YAGNI enforced, shortest working diff)
 - `/archive` - summarize this conversation into `docs/codex-session-notes.md`
 - `/release-check` - run pre-release validation checklist
 

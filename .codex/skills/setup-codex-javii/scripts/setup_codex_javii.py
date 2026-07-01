@@ -14,7 +14,6 @@ from pathlib import Path
 ROOT_MARKERS = (".git", "pyproject.toml", "package.json", "Cargo.toml", "go.mod")
 PROFILES = ("default",)
 MANAGED_GITIGNORE_BLOCK = """# setup-codex-javii managed local state
-.codegraph/
 .codex/sessions/
 .codex/history/
 .codex/transcripts/
@@ -138,6 +137,16 @@ def ensure_gitignore_entries(target_root: Path, report: Report) -> None:
     )
 
 
+def write_mcp_json(target_root: Path, report: Report) -> None:
+    destination = target_root / ".mcp.json"
+    content = '{\n  "mcpServers": {\n    "codebase-memory-mcp": {\n      "command": "codebase-memory-mcp"\n    }\n  }\n}\n'
+    if destination.exists():
+        report.skipped.append(destination)
+        return
+    destination.write_text(content, encoding="utf-8", newline="\n")
+    report.created.append(destination)
+
+
 def bootstrap(profile: str) -> Report:
     script_path = Path(__file__).resolve()
     bootstrap_skill_root = script_path.parents[1]
@@ -164,7 +173,8 @@ def bootstrap(profile: str) -> Report:
     (target_root / ".codex" / "skills").mkdir(parents=True, exist_ok=True)
     (target_root / ".claude" / "skills" / "karpathy").mkdir(parents=True, exist_ok=True)
     (target_root / ".claude" / "skills" / "caveman").mkdir(parents=True, exist_ok=True)
-    (target_root / ".claude" / "skills" / "codegraph").mkdir(parents=True, exist_ok=True)
+    (target_root / ".claude" / "skills" / "codebase-memory").mkdir(parents=True, exist_ok=True)
+    (target_root / ".claude" / "skills" / "ponytail").mkdir(parents=True, exist_ok=True)
     (target_root / ".claude" / "skills" / "archive").mkdir(parents=True, exist_ok=True)
     (target_root / ".claude" / "skills" / "release-check").mkdir(parents=True, exist_ok=True)
     (target_root / "docs").mkdir(parents=True, exist_ok=True)
@@ -176,7 +186,7 @@ def bootstrap(profile: str) -> Report:
         (common / "project-context.template.md", target_root / "docs" / "project-context.md"),
         (common / "architecture.template.md", target_root / "docs" / "architecture.md"),
         (common / "task-log.template.md", target_root / "docs" / "task-log.md"),
-        (common / "codegraph.template.md", target_root / "docs" / "codegraph.md"),
+        (common / "codebase-memory.template.md", target_root / "docs" / "codebase-memory.md"),
         (
             common / "codex-session-notes.template.md",
             target_root / "docs" / "codex-session-notes.md",
@@ -191,8 +201,8 @@ def bootstrap(profile: str) -> Report:
             target_root / ".codex" / "prompts" / "release-check.md",
         ),
         (
-            assets / "prompts" / "codegraph-orient.md",
-            target_root / ".codex" / "prompts" / "codegraph-orient.md",
+            assets / "prompts" / "codebase-memory-orient.md",
+            target_root / ".codex" / "prompts" / "codebase-memory-orient.md",
         ),
         (
             assets / "github" / "PULL_REQUEST_TEMPLATE.md",
@@ -223,8 +233,12 @@ def bootstrap(profile: str) -> Report:
             target_root / ".codex" / "skills" / "karpathy-guidelines" / "SKILL.md",
         ),
         (
-            assets / "skills" / "codegraph-orientation" / "SKILL.md",
-            target_root / ".codex" / "skills" / "codegraph-orientation" / "SKILL.md",
+            assets / "skills" / "codebase-memory" / "SKILL.md",
+            target_root / ".codex" / "skills" / "codebase-memory" / "SKILL.md",
+        ),
+        (
+            assets / "skills" / "ponytail" / "SKILL.md",
+            target_root / ".codex" / "skills" / "ponytail" / "SKILL.md",
         ),
         # Claude Code infrastructure
         (
@@ -244,8 +258,12 @@ def bootstrap(profile: str) -> Report:
             target_root / ".claude" / "skills" / "caveman" / "SKILL.md",
         ),
         (
-            assets / "claude" / "skills" / "codegraph" / "SKILL.md",
-            target_root / ".claude" / "skills" / "codegraph" / "SKILL.md",
+            assets / "claude" / "skills" / "codebase-memory" / "SKILL.md",
+            target_root / ".claude" / "skills" / "codebase-memory" / "SKILL.md",
+        ),
+        (
+            assets / "claude" / "skills" / "ponytail" / "SKILL.md",
+            target_root / ".claude" / "skills" / "ponytail" / "SKILL.md",
         ),
         (
             assets / "claude" / "skills" / "archive" / "SKILL.md",
@@ -262,6 +280,7 @@ def bootstrap(profile: str) -> Report:
             raise RuntimeError(f"Missing asset template: {source}")
         write_rendered_file(source, destination, values, report)
 
+    write_mcp_json(target_root, report)
     ensure_gitignore_entries(target_root, report)
 
     return report
@@ -290,8 +309,8 @@ def main() -> int:
     print("  - Review AGENTS.md and docs/project-context.md.")
     print("  - Add project-specific details to docs/architecture.md and docs/task-log.md.")
     print("  - Review CLAUDE.md and .claude/settings.json for Claude Code configuration.")
-    print("  - Claude skills available: /karpathy /caveman /codegraph /archive /release-check")
-    print("  - Run codegraph init -i and see .claude/skills/codegraph/SKILL.md for optional graph orientation.")
+    print("  - Claude skills available: /karpathy /caveman /codebase-memory /ponytail /archive /release-check")
+    print("  - Install codebase-memory-mcp (see docs/codebase-memory.md) then index this project.")
     print("  - Run your normal validation before committing generated files.")
     return 0
 

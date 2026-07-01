@@ -10,7 +10,8 @@ Read `docs/project-context.md` for full context before important tasks.
 - `.codex/config.toml` - Codex configuration
 - `.codex/prompts/` - reusable Codex prompts
 - `.codex/skills/` - local Codex skills
-- `.claude/skills/` - Claude Code skills (karpathy, caveman, codegraph, archive, release-check)
+- `.claude/skills/` - Claude Code skills (karpathy, caveman, codebase-memory, ponytail, archive, release-check)
+- `.mcp.json` - MCP server config (codebase-memory-mcp)
 - `docs/project-context.md` - main project context
 - `docs/architecture.md` - technical architecture
 - `docs/task-log.md` - change log with decisions
@@ -51,7 +52,8 @@ These principles apply to all non-trivial coding work in this session.
 
 - `/karpathy` - re-anchor to full karpathy discipline (useful after long conversations drift)
 - `/caveman` - switch to maximum-simplicity brutalist mode (no abstractions, just make it work)
-- `/codegraph` - orient using CodeGraph when `.codegraph/` exists; includes MCP setup instructions
+- `/codebase-memory` - orient using Codebase Memory MCP knowledge graph before broad tasks
+- `/ponytail` - activate lazy-dev mode (YAGNI enforced, shortest working diff)
 - `/archive` - summarize this conversation into `docs/codex-session-notes.md`
 - `/release-check` - run pre-release validation checklist
 

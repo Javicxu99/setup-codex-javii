@@ -14,7 +14,7 @@ env/
 tmp/
 *.bak
 *.bak.*
-.codegraph/
+grafo/
 
 .codex/sessions/
 .codex/history/

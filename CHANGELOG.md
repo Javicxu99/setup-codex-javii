@@ -8,6 +8,27 @@ This project follows semantic versioning for Git tags and GitHub releases.
 
 - No unreleased changes.
 
+## [2.1.0] - 2026-07-01
+
+### Added
+- `codebase-memory-mcp` replaces CodeGraph as the knowledge-graph engine (99.2% token reduction, sub-ms queries, 158 languages, zero dependencies).
+- `.mcp.json` at project root: registers `codebase-memory-mcp` for all team members; `CBM_CACHE_DIR` points graph storage to `grafo/` inside the project.
+- `.claude/skills/codebase-memory/SKILL.md`: `/codebase-memory` skill with orientation procedure and MCP setup instructions.
+- `.claude/skills/ponytail/SKILL.md`: `/ponytail` skill — lazy-dev mode (YAGNI enforced, shortest working diff, lite/full/ultra levels).
+- `.codex/skills/codebase-memory/SKILL.md`: Codex-native codebase-memory orientation skill.
+- `.codex/skills/ponytail/SKILL.md`: Codex-native ponytail skill with full ladder and rules.
+- `.codex/prompts/codebase-memory-orient.md`: orientation prompt replacing codegraph-orient.
+- Bootstrap assets: all new skills and templates added so generated projects include codebase-memory and ponytail out of the box.
+- `settings.json` and template: `claude-sonnet-5`, `bypassPermissions` default mode, full tool allowlist, ponytail marketplace+plugin, `enableAllProjectMcpServers`.
+
+### Changed
+- `setup_codex_javii.py`: replaced all CodeGraph references with codebase-memory-mcp; added `.mcp.json` generation; added ponytail skill generation for both `.claude/` and `.codex/`.
+- `CLAUDE.md` template and project root: updated skill list and structure to reflect codebase-memory and ponytail.
+- `.gitignore`: replaced `.codegraph/` with `grafo/`.
+
+### Removed
+- CodeGraph (`colbymchenry/codegraph`) — replaced by codebase-memory-mcp. Reason: 7 critical graph-traversal bugs open on removal date; codebase-memory-mcp is 120× more token-efficient.
+
 ## [2.0.0] - 2026-05-19
 
 ### Added

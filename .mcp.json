@@ -1,10 +1,7 @@
 {
   "mcpServers": {
     "codebase-memory-mcp": {
-      "command": "codebase-memory-mcp",
-      "env": {
-        "CBM_CACHE_DIR": "C:/Users/javier.irigoyen.INNOVASUR/Desktop/MIS-PROYECTOS/setup-codex-javii/grafo"
-      }
+      "command": "codebase-memory-mcp"
     }
   }
 }

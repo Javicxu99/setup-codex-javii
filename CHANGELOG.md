@@ -8,6 +8,17 @@ This project follows semantic versioning for Git tags and GitHub releases.
 
 - No unreleased changes.
 
+## [2.2.0] - 2026-07-15
+
+### Added
+- Exhaustive Notion candidate audit in `docs/notion-candidate-audit.md`.
+
+### Changed
+- Codex defaults now use `gpt-5.6-sol`, medium reasoning, medium verbosity, and full autonomous local execution.
+- Completed the migration from CodeGraph guidance to `codebase-memory-mcp` across launchers, skills, templates, and docs.
+- Bootstrap now merges the Codebase Memory server into an existing `.mcp.json` with a backup instead of silently skipping it.
+- Claude Code reasoning effort is aligned to `medium`.
+
 ## [2.1.0] - 2026-07-01
 
 ### Added

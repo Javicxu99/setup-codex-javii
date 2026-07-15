@@ -11,8 +11,8 @@ Use at the start of an important task.
 
 1. Read `AGENTS.md`.
 2. Read `docs/project-context.md`.
-3. Read `docs/codegraph.md` if it exists.
-4. If `.codegraph/` exists and CodeGraph tools are available, use graph context to narrow relevant symbols, dependencies, and impact.
+3. Read `docs/codebase-memory.md` if it exists.
+4. If codebase-memory MCP tools are available, use `get_architecture`, `search_graph`, and `trace_path` to narrow relevant symbols, dependencies, and impact.
 5. Review relevant files in `docs/` based on the task.
 6. Identify the affected layer:
    - data

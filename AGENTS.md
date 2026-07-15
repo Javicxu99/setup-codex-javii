@@ -12,7 +12,7 @@ This repo is a Codex skill bootstrapper for initializing projects with my person
 - Keep `AGENTS.md` and templates short, operational, and easy to adapt.
 - Always respect `.bak` backups when writing into target projects.
 - Apply `.codex/skills/karpathy-guidelines` by default for non-trivial coding tasks.
-- Use `.codex/skills/codegraph-orientation` for broad code understanding when `.codegraph/` is available.
+- Prefer `codebase-memory-mcp` graph tools for code discovery and impact analysis; fall back to `rg` and direct reads when unavailable.
 - After important Codex conversations, update `docs/codex-session-notes.md` or `docs/task-log.md`.
 - For release-relevant changes, update `CHANGELOG.md` and `VERSION`.
 - Use `.github/` templates to keep GitHub issues and PRs traceable.

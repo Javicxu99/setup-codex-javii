@@ -1,195 +1,114 @@
 # setup-codex-javii
 
-Personal bootstrap repo for preparing projects with a clean, repeatable Codex setup.
+Reusable bootstrap for starting projects with a consistent Codex and Claude Code setup.
 
-This repository contains a reusable Codex skill named `setup-codex-javii`. It initializes a target project with practical agent instructions, Codex configuration, prompts, project context docs, and local skills that can be customized per project.
+## Defaults
 
-The bootstrap skill itself lives in `.codex/skills/setup-codex-javii/` so the repository follows the same Codex-native layout it generates for other projects: configuration, prompts, and selectable local skills all live under `.codex/`.
+Generated Codex projects use:
 
-## What It Generates
+```toml
+model = "gpt-5.6-sol"
+model_reasoning_effort = "medium"
+plan_mode_reasoning_effort = "medium"
+model_reasoning_summary = "auto"
+model_verbosity = "medium"
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+history.persistence = "save-all"
+```
 
-Running the bootstrap script in a target project creates:
+`gpt5.6sol` is the requested human-facing name; the supported Codex identifier is `gpt-5.6-sol`. Full access is deliberate for a personal bootstrap and should only be used in trusted repositories. Organization requirements can still restrict it.
 
-**Codex infrastructure:**
-- `AGENTS.md`
-- `CHANGELOG.md`
-- `.codex/config.toml`
-- `.codex/prompts/`
-- `.codex/skills/`
-- `.github/`
-- `docs/project-context.md`
-- `docs/architecture.md`
-- `docs/task-log.md`
-- `docs/codegraph.md`
-- `docs/codex-session-notes.md`
-- `docs/README.codex.md`
+## What it generates
 
-**Claude Code infrastructure:**
-- `CLAUDE.md` - always-on context with embedded Karpathy guidelines
-- `.claude/settings.json` - model: claude-sonnet-4-6, effortLevel: high, shared safety denies
-- `.claude/skills/karpathy/SKILL.md` - `/karpathy` re-anchor discipline
-- `.claude/skills/caveman/SKILL.md` - `/caveman` maximum-simplicity mode
-- `.claude/skills/codegraph/SKILL.md` - `/codegraph` orientation with MCP setup
-- `.claude/skills/archive/SKILL.md` - `/archive` session archiving
-- `.claude/skills/release-check/SKILL.md` - `/release-check` pre-release checklist
+- `AGENTS.md`, `CLAUDE.md`, `CHANGELOG.md`, and a managed `.gitignore` block.
+- `.codex/config.toml`, reusable prompts, and project-local skills.
+- `.claude/settings.json` and matching Claude Code skills.
+- `.mcp.json` with `codebase-memory-mcp`, preserving other configured servers.
+- Project context, architecture, task log, graph guidance, and curated session notes under `docs/`.
+- Lightweight GitHub issue and pull-request templates.
 
-**Plus:** a managed `.gitignore` block for local Codex, CodeGraph, and Claude state
+Included Codex skills:
 
-## Usage
+- `project-orientation`: establish context before broad changes.
+- `update-project-context`: keep living documentation synchronized.
+- `karpathy-guidelines`: small, surgical, empirically validated changes.
+- `codebase-memory`: graph-first code discovery with a documented fallback.
+- `ponytail`: optional YAGNI-focused implementation mode.
 
-Clone this repo from GitHub and use it as your personal default:
+## Quick start
 
-```bash
+Clone the bootstrap once:
+
+```powershell
 git clone https://github.com/Javicxu99/setup-codex-javii.git
 ```
 
-From the root of a target project:
+From the target repository root:
 
 ```powershell
 C:\path\to\setup-codex-javii\iniciar-setup.cmd
 ```
 
-This launcher runs the default bootstrap and offers optional CodeGraph setup.
-
-You can also call the Python script directly:
-
-```bash
-python path/to/setup-codex-javii/.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py --profile default
-```
-
-The script detects the project root by looking for `.git`, `pyproject.toml`, `package.json`, `Cargo.toml`, or `go.mod`.
-
-If a destination file already exists, the script creates a backup first: `.bak`, `.bak.1`, `.bak.2`, and so on.
-
-## Generated Codex Config
-
-The generated Codex configuration uses:
-
-```toml
-model = "gpt-5.5"
-model_provider = "openai"
-model_reasoning_effort = "high"
-plan_mode_reasoning_effort = "high"
-model_reasoning_summary = "auto"
-model_verbosity = "medium"
-approval_policy = "on-request"
-sandbox_mode = "workspace-write"
-```
-
-No MCP or advanced configuration is included by default.
-
-## Claude Code Support
-
-Generated projects are ready to use Claude Code out of the box. The bootstrap creates:
-
-- **`CLAUDE.md`** - loaded on every conversation. Contains project structure, Karpathy guidelines, and a reference to available Claude Code skills.
-- **`.claude/settings.json`** - configures claude-sonnet-4-6 with `effortLevel: high` and shared safety denies for local secrets.
-- **Claude Code skills** in `.claude/skills/`: `/karpathy`, `/caveman`, `/codegraph`, `/archive`, `/release-check`.
-
-Claude Code sessions auto-save to `~/.claude/projects/`. Use `/archive` to create human-readable curated summaries in `docs/codex-session-notes.md`.
-
-The Stop hook in `.claude/settings.json` logs session timestamps to `.claude/session-log.txt` (local, excluded from git).
-
-## Optional CodeGraph Support
-
-Generated projects are ready to use CodeGraph as an optional code understanding layer. CodeGraph builds a local knowledge graph for symbols, relationships, callers, callees, impact analysis, and file structure.
-
-Source: https://github.com/colbymchenry/codegraph
-
-Official CodeGraph setup is environment-level first, project-level second:
-
-```bash
-npx @colbymchenry/codegraph
-```
-
-Then restart the agent if the installer asks for it and initialize each target project from its root:
-
-```bash
-codegraph init -i
-```
-
-The bootstrap does not install CodeGraph, run `npx`, or hard-code MCP configuration. It prepares the project with `docs/codegraph.md`, `.codex/prompts/codegraph-orient.md`, and `.codex/skills/codegraph-orientation/` so agents can use graph context when `.codegraph/` exists and fall back to normal repo search when it does not.
-
-The generated `.gitignore` block keeps `.codegraph/` and optional raw Codex state out of Git.
-
-## Codex History
-
-Codex session history is handled by Codex itself through `history.persistence = "save-all"`. Raw Codex state normally lives under the user's Codex home directory, such as `~/.codex`, not inside the project repository.
-
-Use `docs/codex-session-notes.md` for reviewed, human-readable summaries of important Codex conversations. Use `.codex/prompts/archive-session.md` when a conversation creates durable project context, decisions, operating assumptions, follow-ups, or risks.
-
-Raw transcript exports are not created by default. If you manually export raw sessions into the project, keep them out of Git; `.gitignore` excludes common local raw-export paths.
-
-## GitHub Traceability
-
-This repo is prepared for long-term GitHub traceability:
-
-- `VERSION` stores the current bootstrap version.
-- `CHANGELOG.md` records user-facing changes by version.
-- `docs/release-process.md` documents the release and tagging flow.
-- `.github/` contains issue and pull request templates.
-- `.codex/prompts/release-check.md` helps review a version before publishing.
-
-Generated projects also receive `CHANGELOG.md` and GitHub issue/PR templates so future work can be tracked from the start.
-
-## Included Local Skills
-
-- `project-orientation`: read context and map the affected area before important work.
-- `codegraph-orientation`: use optional CodeGraph context for broad code understanding tasks.
-- `update-project-context`: update living project docs after meaningful changes.
-- `karpathy-guidelines`: Codex-oriented adaptation of principles inspired by `forrestchang/andrej-karpathy-skills`.
-
-This repo also includes `karpathy-guidelines` in `.codex/skills/karpathy-guidelines/` so it can be selected directly while working on this project.
-
-## Install `karpathy-guidelines` Globally
-
-To use the skill across Codex chats and projects, copy it to the global Codex skills directory.
-
-PowerShell:
+Or run the dependency-free Python entry point:
 
 ```powershell
-New-Item -ItemType Directory -Force "$env:USERPROFILE\.codex\skills\karpathy-guidelines"
-Copy-Item -Force ".codex\skills\karpathy-guidelines\SKILL.md" "$env:USERPROFILE\.codex\skills\karpathy-guidelines\SKILL.md"
+python C:\path\to\setup-codex-javii\.codex\skills\setup-codex-javii\scripts\setup_codex_javii.py --profile default
 ```
 
-Bash:
+The script detects `.git`, `pyproject.toml`, `package.json`, `Cargo.toml`, or `go.mod`. Before overwriting a managed destination it creates `.bak`, `.bak.1`, and later backups. When `.mcp.json` already exists, it preserves its servers and adds or updates only `codebase-memory-mcp`.
 
-```bash
-mkdir -p ~/.codex/skills/karpathy-guidelines
-cp .codex/skills/karpathy-guidelines/SKILL.md ~/.codex/skills/karpathy-guidelines/SKILL.md
+## Codebase Memory MCP
+
+Source: https://github.com/DeusData/codebase-memory-mcp (MIT).
+
+Install the binary once per machine using the upstream instructions. The generated `.mcp.json` registers:
+
+```json
+{
+  "mcpServers": {
+    "codebase-memory-mcp": {
+      "command": "codebase-memory-mcp"
+    }
+  }
+}
 ```
 
-## Working With Codex In VS Code
+After installation, restart Codex and index the target repository with the MCP `index_repository` tool. Agents should prefer:
 
-1. Clone or reference this repo from your Codex environment.
-2. Open the target project in VS Code.
-3. Run the bootstrap script with the default profile.
-4. Ask Codex to read `AGENTS.md` and `docs/project-context.md` before important tasks.
-5. Use the local skills for orientation, context updates, and implementation discipline.
+1. `search_graph` for symbols and routes.
+2. `trace_path` for callers, callees, and impact.
+3. `get_code_snippet` after resolving an exact qualified name.
+4. `query_graph` for complex relationships.
+5. `get_architecture` for a high-level map.
 
-## Local Validation
+Use `rg` and direct file reads for literals, configuration, non-code files, or when the graph is unavailable.
 
-From this repo root:
+## Claude Code
 
-```bash
-mkdir tmp/sample-default
-cd tmp/sample-default
-git init
-python ../../.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py --profile default
-python ../../.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py --profile default
+The bootstrap also generates Claude Code infrastructure with medium effort, broad local permissions, explicit secret-read denials, project MCP enablement, and matching Karpathy, codebase-memory, Ponytail, archive, and release-check skills.
+
+## Validation
+
+From this repository:
+
+```powershell
+python -m py_compile .codex\skills\setup-codex-javii\scripts\setup_codex_javii.py
 ```
 
-The second run should create `.bak` backups.
+For an end-to-end check, create a temporary Git repository, run the bootstrap twice, and verify that the second run creates backups. Also test a pre-existing `.mcp.json` to confirm that unrelated MCP servers remain intact.
 
-## Release Commit
-
-Review generated changes before committing.
-
-```bash
-git status
-git add .
-git commit -m "2.0.0 Add Claude Code infrastructure"
-git tag -a v2.0.0 -m "v2.0.0"
-git push
-git push origin v2.0.0
+```powershell
+git diff --check
+git status --short --branch
 ```
+
+## Design constraints
+
+- Standard Python only; no runtime package dependency.
+- Universal defaults rather than domain-specific scaffolding.
+- Small operational `AGENTS.md`; durable context belongs in `docs/`.
+- No automatic binary installation or secret handling.
+- Generated local state and raw transcripts remain outside version control.
+
+The complete assessment of projects considered for this setup is in [`docs/notion-candidate-audit.md`](docs/notion-candidate-audit.md).

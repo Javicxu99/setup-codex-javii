@@ -1,5 +1,6 @@
 param(
-    [switch]$NoCodeGraph
+    [Alias("NoCodeGraph")]
+    [switch]$NoCodebaseMemory
 )
 
 Set-StrictMode -Version Latest
@@ -81,38 +82,21 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
-if ($NoCodeGraph) {
-    Write-Host "CodeGraph step skipped because -NoCodeGraph was provided."
+if ($NoCodebaseMemory) {
+    Write-Host "codebase-memory-mcp guidance skipped because -NoCodebaseMemory was provided."
     exit 0
 }
 
 Write-Host ""
-Write-Host "Optional CodeGraph setup:"
-Write-Host "  installer: npx @colbymchenry/codegraph"
-Write-Host "  project init: codegraph init -i"
-
-if (-not (Test-Command "codegraph")) {
-    if (Test-Command "npx") {
-        if (Ask-YesNo "Run the official CodeGraph installer now?" $false) {
-            & npx @colbymchenry/codegraph
-            if ($LASTEXITCODE -ne 0) {
-                exit $LASTEXITCODE
-            }
-        }
-    }
-    else {
-        Write-Host "npx is not available. Install Node.js/npm first if you want CodeGraph."
-    }
-}
-
-if (Test-Command "codegraph") {
-    if (Ask-YesNo "Initialize CodeGraph in this project now?" $false) {
-        & codegraph init -i
-        exit $LASTEXITCODE
-    }
+Write-Host "Codebase Memory status:"
+if (Test-Command "codebase-memory-mcp") {
+    Write-Host "  codebase-memory-mcp is available."
+    Write-Host "  Restart Codex after first-time MCP configuration, then index the project with index_repository."
 }
 else {
-    Write-Host "CodeGraph is not on PATH yet. After installing it, run: codegraph init -i"
+    Write-Host "  codebase-memory-mcp is not on PATH."
+    Write-Host "  Install it from: https://github.com/DeusData/codebase-memory-mcp"
+    Write-Host "  The generated .mcp.json already registers the server command."
 }
 
 exit 0

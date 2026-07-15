@@ -25,10 +25,10 @@ Use this process when publishing a new version of `setup-codex-javii`.
 ```bash
 git status
 git add .
-git commit -m "1.0.3 Add optional CodeGraph support"
-git tag -a v1.0.3 -m "v1.0.3"
+git commit -m "2.2.0 Align Codex defaults and graph integration"
+git tag -a v2.2.0 -m "v2.2.0"
 git push
-git push origin v1.0.3
+git push origin v2.2.0
 ```
 
 After pushing, create a GitHub Release from the tag and paste the matching `CHANGELOG.md` entry.

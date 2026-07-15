@@ -14,7 +14,7 @@
 
 ## Non-Goals
 
-- Do not manage MCP configuration.
+- Manage only the shared, credential-free `codebase-memory-mcp` registration and preserve existing MCP servers.
 - Do not install tools.
 - Do not create a plugin framework.
 - Do not assume a single architecture for every project.

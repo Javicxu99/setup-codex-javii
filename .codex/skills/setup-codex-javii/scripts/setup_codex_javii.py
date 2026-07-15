@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 import sys
 from dataclasses import dataclass, field
@@ -139,12 +140,35 @@ def ensure_gitignore_entries(target_root: Path, report: Report) -> None:
 
 def write_mcp_json(target_root: Path, report: Report) -> None:
     destination = target_root / ".mcp.json"
-    content = '{\n  "mcpServers": {\n    "codebase-memory-mcp": {\n      "command": "codebase-memory-mcp"\n    }\n  }\n}\n'
-    if destination.exists():
+    server = {"command": "codebase-memory-mcp"}
+    if not destination.exists():
+        content = {"mcpServers": {"codebase-memory-mcp": server}}
+        destination.write_text(
+            json.dumps(content, indent=2) + "\n", encoding="utf-8", newline="\n"
+        )
+        report.created.append(destination)
+        return
+
+    try:
+        content = json.loads(destination.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as exc:
+        raise RuntimeError(f"Cannot safely update {destination}: {exc}") from exc
+
+    servers = content.setdefault("mcpServers", {})
+    if not isinstance(servers, dict):
+        raise RuntimeError(f"Cannot safely update {destination}: mcpServers is not an object")
+    if servers.get("codebase-memory-mcp") == server:
         report.skipped.append(destination)
         return
-    destination.write_text(content, encoding="utf-8", newline="\n")
-    report.created.append(destination)
+
+    backup = next_backup_path(destination)
+    shutil.copy2(destination, backup)
+    report.backups.append(backup)
+    report.updated.append(destination)
+    servers["codebase-memory-mcp"] = server
+    destination.write_text(
+        json.dumps(content, indent=2) + "\n", encoding="utf-8", newline="\n"
+    )
 
 
 def bootstrap(profile: str) -> Report:

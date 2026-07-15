@@ -13,13 +13,13 @@ Help implement, validate, and document changes in a clear, incremental, reviewab
 - `.codex/skills/`: local project skills.
 - `docs/project-context.md`: main project context.
 - `docs/architecture.md`: technical structure.
-- `docs/codegraph.md`: optional graph-based code orientation.
+- `docs/codebase-memory.md`: graph-based code orientation and setup.
 - `docs/task-log.md`: changes, decisions, and validations.
 
 ## Rules
 
 - Read `docs/project-context.md` before important tasks.
-- Use CodeGraph orientation when `.codegraph/` exists and the task spans multiple files or symbols.
+- Prefer `codebase-memory-mcp` graph tools when a task spans multiple files or symbols; fall back to `rg` and direct reads when unavailable.
 - Keep changes small and directly related to the task.
 - Do not introduce dependencies, services, or abstractions without a clear need.
 - Do not overwrite existing work without understanding it.

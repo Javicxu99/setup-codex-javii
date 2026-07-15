@@ -23,14 +23,14 @@ python path/to/setup-codex-javii/.codex/skills/setup-codex-javii/scripts/setup_c
    - `.codex/prompts/`
    - `.codex/skills/`
    - `.github/`
-   - managed `.gitignore` entries for local Codex and CodeGraph state
+   - managed `.gitignore` entries for local Codex and codebase-memory state
    - `docs/`
 4. Enable official Codex history persistence with `history.persistence = "save-all"`.
 5. Create `docs/codex-session-notes.md` for reviewed summaries of important Codex conversations.
-6. Create optional CodeGraph docs, prompt, and orientation skill for graph-based code understanding.
+6. Configure `codebase-memory-mcp` and create its docs, prompt, and orientation skill.
 7. Copy local skills:
    - `project-orientation`
-   - `codegraph-orientation`
+   - `codebase-memory`
    - `update-project-context`
    - `karpathy-guidelines`
 8. Create `.bak` backups before overwriting any existing file.
@@ -42,6 +42,6 @@ python path/to/setup-codex-javii/.codex/skills/setup-codex-javii/scripts/setup_c
 - Do not commit unless explicitly asked.
 - Keep `AGENTS.md` brief; long context belongs in `docs/`.
 - Store curated conversation summaries in `docs/codex-session-notes.md`, not raw transcripts.
-- Do not install or initialize CodeGraph automatically; users can run `codegraph init -i` in target projects.
+- Do not install binaries automatically; document installation and let the user or environment provide `codebase-memory-mcp`.
 - Keep the setup universal; domain-specific project context belongs in the generated `docs/`.
 - Keep GitHub traceability lightweight with changelog entries, issues, PRs, and version tags.

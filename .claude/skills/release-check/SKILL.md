@@ -1,5 +1,5 @@
 ---
-description: Run pre-release validation checklist: git status, CHANGELOG vs VERSION, script syntax, bootstrap test in tmp/, secrets scan, and GitHub templates check. Reports pass/fail per step.
+description: Run the Claude-side pre-release checklist: git state, settings, hooks, agents, skills, secrets, and documentation. Reports pass/fail per step.
 ---
 
 # Release Check
@@ -12,19 +12,16 @@ Review this project before publishing a version. Run each step and report the re
 
 2. **CHANGELOG vs VERSION** - confirm the top entry in `CHANGELOG.md` matches `VERSION`.
 
-3. **Script syntax** - run:
+3. **Claude hook syntax** - run:
    ```
-   python -m py_compile .codex/skills/setup-codex-javii/scripts/setup_codex_javii.py
+   python -m py_compile .claude/hooks/session_start_ponytail.py
    ```
    No output = passes.
 
-4. **Bootstrap validation** - run the bootstrap in a temp folder:
-   ```
-   mkdir -p tmp/release-test && cd tmp/release-test && git init
-   python ../../.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py --profile default
-   ```
-   Verify: `CLAUDE.md`, `.claude/settings.json`, `.claude/skills/` are created.
-   Run again to verify idempotence (`.bak` files created, no errors).
+4. **Claude configuration** - parse `.claude/settings.json` as JSON and verify that
+   `CLAUDE.md`, `.claude/agents/`, `.claude/hooks/`, `.claude/output-styles/`, and
+   `.claude/skills/` are internally consistent. Confirm that no foreign-provider model
+   identifier appears anywhere under `.claude/`.
 
 5. **Secrets check** - search for anything that should not be committed:
    ```

@@ -5,7 +5,7 @@
 ```powershell
 .\iniciar-setup.cmd
 .\iniciar-setup.ps1 -NoCodebaseMemory
-python .codex\skills\setup-codex-javii\scripts\setup_codex_javii.py --profile default
+python scripts\setup_codex_javii.py --profile default
 ```
 
 `-NoCodeGraph` remains an alias for backward compatibility.
@@ -23,7 +23,7 @@ Install from https://github.com/DeusData/codebase-memory-mcp, restart Codex, the
 ## Validation
 
 ```powershell
-python -m py_compile .codex\skills\setup-codex-javii\scripts\setup_codex_javii.py
+python -m py_compile scripts\setup_codex_javii.py
 git diff --check
 git status --short --branch
 ```

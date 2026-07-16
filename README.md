@@ -26,6 +26,7 @@ multi_agent = true
 
 ## What it generates
 
+- Provider boundaries are strict: `.codex/` contains OpenAI/Codex configuration and `.claude/` contains Anthropic/Claude Code configuration. Models, agents, hooks, and provider templates never cross those directories; only equivalent project skills and shared repository context are maintained for both.
 - `AGENTS.md`, `CLAUDE.md`, `CHANGELOG.md`, and a managed `.gitignore` block.
 - `.codex/config.toml`, a Ponytail `SessionStart` hook, reusable prompts, skills, and a read-only high-reasoning auditor agent.
 - `.claude/settings.json`, matching skills and auditor agent, and the Pragmatic output style.
@@ -60,7 +61,7 @@ C:\path\to\setup-codex-javii\iniciar-setup.cmd
 Or run the dependency-free Python entry point:
 
 ```powershell
-python C:\path\to\setup-codex-javii\.codex\skills\setup-codex-javii\scripts\setup_codex_javii.py --profile default
+python C:\path\to\setup-codex-javii\scripts\setup_codex_javii.py --profile default
 ```
 
 The script detects `.git`, `pyproject.toml`, `package.json`, `Cargo.toml`, or `go.mod`. Before overwriting a managed destination it creates `.bak`, `.bak.1`, and later backups. When `.mcp.json` already exists, including UTF-8 files with a BOM, it preserves its servers and adds or updates only `codebase-memory-mcp`.
@@ -93,7 +94,7 @@ Use `rg` and direct file reads for literals, configuration, non-code files, or w
 
 ## Claude Code
 
-The generated settings use the exact model accepted by the installed Claude CLI, `claude-fable-5`, with `high` effort, the `Pragmatic` output style, project MCP enablement, and `bypassPermissions`. Secret reads remain denied explicitly. This autonomy is intended only for trusted repositories. Caveman remains available in the template for provenance but is disabled through `skillOverrides`; Ponytail is injected at startup, resume, and clear through the shared SessionStart hook.
+The generated settings use the exact model accepted by the installed Claude CLI, `claude-fable-5`, with `high` effort, the `Pragmatic` output style, project MCP enablement, and `bypassPermissions`. Secret reads remain denied explicitly. This autonomy is intended only for trusted repositories. Caveman remains available in the template for provenance but is disabled through `skillOverrides`; Ponytail is injected by Claude's own SessionStart hook. Claude templates live under `.claude/bootstrap-assets/`, never under `.codex/`.
 
 ## Daily project health
 
@@ -106,7 +107,7 @@ After bootstrap, add an `OPENAI_API_KEY` Actions secret to the target repository
 From this repository:
 
 ```powershell
-python -m py_compile .codex\skills\setup-codex-javii\scripts\setup_codex_javii.py
+python -m py_compile scripts\setup_codex_javii.py
 ```
 
 For an end-to-end check, create a temporary Git repository, run the bootstrap twice, and verify that the second run creates backups. Also test a pre-existing `.mcp.json` to confirm that unrelated MCP servers remain intact.

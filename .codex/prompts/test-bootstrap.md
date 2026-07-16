@@ -6,7 +6,7 @@ Expected steps:
 
 1. Create `tmp/sample-default`.
 2. Initialize git inside it.
-3. Run `python ../../.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py --profile default`.
+3. Run `python ../../scripts/setup_codex_javii.py --profile default`.
 4. Run it again and verify `.bak` backups.
 5. Verify that the expected universal Codex structure exists.
 6. Verify that `docs/codebase-memory.md`, `.codex/prompts/codebase-memory-orient.md`, and `.codex/skills/codebase-memory/SKILL.md` were generated.

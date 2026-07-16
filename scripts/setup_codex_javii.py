@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bootstrap a project with Javii's Codex setup."""
+"""Bootstrap a project with provider-separated Codex and Claude environments."""
 
 from __future__ import annotations
 
@@ -173,12 +173,18 @@ def write_mcp_json(target_root: Path, report: Report) -> None:
 
 def bootstrap(profile: str) -> Report:
     script_path = Path(__file__).resolve()
-    bootstrap_skill_root = script_path.parents[1]
+    source_root = script_path.parents[1]
+    bootstrap_skill_root = source_root / ".codex" / "skills" / "setup-codex-javii"
     assets = bootstrap_skill_root / "assets"
+    claude_assets = source_root / ".claude" / "bootstrap-assets"
     common = assets / "common"
     target_root = find_project_root(Path.cwd())
 
-    if not (bootstrap_skill_root / "SKILL.md").exists() or not assets.exists():
+    if (
+        not (bootstrap_skill_root / "SKILL.md").exists()
+        or not assets.exists()
+        or not claude_assets.exists()
+    ):
         raise RuntimeError(
             "Could not locate the setup-codex-javii skill assets. "
             "Run the script from a complete clone of this repository."
@@ -291,52 +297,60 @@ def bootstrap(profile: str) -> Report:
         ),
         # Claude Code infrastructure
         (
-            assets / "claude" / "CLAUDE.template.md",
+            claude_assets / "CLAUDE.template.md",
             target_root / "CLAUDE.md",
         ),
         (
-            assets / "claude" / "settings.template.json",
+            claude_assets / "settings.template.json",
             target_root / ".claude" / "settings.json",
         ),
         (
-            assets / "claude" / "agents" / "daily-project-auditor.md",
+            claude_assets / "agents" / "daily-project-auditor.md",
             target_root / ".claude" / "agents" / "daily-project-auditor.md",
         ),
         (
-            assets / "claude" / "output-styles" / "pragmatic.md",
+            claude_assets / "output-styles" / "pragmatic.md",
             target_root / ".claude" / "output-styles" / "pragmatic.md",
         ),
         (
-            assets / "claude" / "skills" / "karpathy" / "SKILL.md",
+            claude_assets / "skills" / "karpathy" / "SKILL.md",
             target_root / ".claude" / "skills" / "karpathy" / "SKILL.md",
         ),
         (
-            assets / "claude" / "skills" / "caveman" / "SKILL.md",
+            claude_assets / "skills" / "caveman" / "SKILL.md",
             target_root / ".claude" / "skills" / "caveman" / "SKILL.md",
         ),
         (
-            assets / "claude" / "skills" / "codebase-memory" / "SKILL.md",
+            claude_assets / "skills" / "codebase-memory" / "SKILL.md",
             target_root / ".claude" / "skills" / "codebase-memory" / "SKILL.md",
         ),
         (
-            assets / "claude" / "skills" / "ponytail" / "SKILL.md",
+            claude_assets / "skills" / "ponytail" / "SKILL.md",
             target_root / ".claude" / "skills" / "ponytail" / "SKILL.md",
         ),
         (
-            assets / "claude" / "skills" / "archive" / "SKILL.md",
+            claude_assets / "skills" / "archive" / "SKILL.md",
             target_root / ".claude" / "skills" / "archive" / "SKILL.md",
         ),
         (
-            assets / "claude" / "skills" / "release-check" / "SKILL.md",
+            claude_assets / "skills" / "release-check" / "SKILL.md",
             target_root / ".claude" / "skills" / "release-check" / "SKILL.md",
         ),
         (
-            assets / "claude" / "skills" / "audit-web-quality" / "SKILL.md",
+            claude_assets / "skills" / "audit-web-quality" / "SKILL.md",
             target_root / ".claude" / "skills" / "audit-web-quality" / "SKILL.md",
         ),
         (
-            assets / "claude" / "skills" / "review-skill-security" / "SKILL.md",
+            claude_assets / "skills" / "review-skill-security" / "SKILL.md",
             target_root / ".claude" / "skills" / "review-skill-security" / "SKILL.md",
+        ),
+        (
+            claude_assets / "hooks" / "session_start_ponytail.py",
+            target_root / ".claude" / "hooks" / "session_start_ponytail.py",
+        ),
+        (
+            claude_assets / "claude-session-notes.template.md",
+            target_root / "docs" / "claude-session-notes.md",
         ),
     ]
 

@@ -69,7 +69,7 @@ function Ask-YesNo {
 }
 
 $repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$bootstrapScript = Join-Path $repoRoot ".codex\skills\setup-codex-javii\scripts\setup_codex_javii.py"
+$bootstrapScript = Join-Path $repoRoot "scripts\setup_codex_javii.py"
 
 if (-not (Test-Path -LiteralPath $bootstrapScript)) {
     throw "Bootstrap script not found: $bootstrapScript"

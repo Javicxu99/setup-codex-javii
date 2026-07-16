@@ -10,8 +10,8 @@ This project was initialized with the `{{PROFILE}}` profile on {{DATE}}.
 4. Keep changes small and record durable decisions in `docs/task-log.md`.
 5. Run relevant validation before declaring completion.
 
-Ponytail Lite is injected at each new agent session. The project also includes matching
-read-only `daily-project-auditor` definitions for Codex and Claude Code.
+Ponytail Lite is injected at each new Codex session. The project includes a Codex-native,
+read-only `daily-project-auditor` definition.
 
 ## Local skills
 

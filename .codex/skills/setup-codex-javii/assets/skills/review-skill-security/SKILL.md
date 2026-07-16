@@ -1,6 +1,6 @@
 ---
 name: review-skill-security
-description: Review third-party Codex or Claude skills, plugins, MCP bundles, and agent instruction packages before installing, vendoring, or enabling them. Use when evaluating a downloaded skill, adding an external skill repository, updating a vendored skill, or assessing its permissions, scripts, provenance, license, dependencies, and prompt-injection risk.
+description: Review third-party agent skills, plugins, MCP bundles, and instruction packages before installing, vendoring, or enabling them. Use when evaluating a downloaded skill, adding an external skill repository, updating a vendored skill, or assessing its permissions, scripts, provenance, license, dependencies, and prompt-injection risk.
 ---
 
 # Review skill security

@@ -6,13 +6,9 @@ Read `docs/project-context.md` for full context before important tasks.
 
 ## Project Structure
 
-- `AGENTS.md` - working rules for Codex
-- `.codex/config.toml` - Codex configuration
-- `.codex/agents/` - read-only high-reasoning project auditor
-- `.codex/prompts/` - reusable Codex prompts
-- `.codex/skills/` - local Codex skills
 - `.claude/settings.json` - Claude Code configuration (`claude-fable-5`, high, Pragmatic, bypassPermissions)
-- `.claude/agents/` - matching read-only project auditor
+- `.claude/agents/` - Claude-specific read-only project auditor
+- `.claude/hooks/` - Claude SessionStart hooks
 - `.claude/output-styles/` - concise Pragmatic output style
 - `.claude/skills/` - Claude Code skills (karpathy, codebase-memory, ponytail, audit-web-quality, review-skill-security, archive, release-check; Caveman retained but disabled)
 - `.mcp.json` - MCP server config (codebase-memory-mcp)
@@ -58,15 +54,14 @@ These principles apply to all non-trivial coding work in this session.
 - `/caveman` - retained for provenance but disabled by default in `skillOverrides`
 - `/codebase-memory` - orient using Codebase Memory MCP knowledge graph before broad tasks
 - `/ponytail` - activate lazy-dev mode (YAGNI enforced, shortest working diff)
-- `/archive` - summarize this conversation into `docs/codex-session-notes.md`
+- `/archive` - summarize this conversation into `docs/claude-session-notes.md`
 - `/release-check` - run pre-release validation checklist
 - `/audit-web-quality` - audit accessibility, performance, security, compatibility, and SEO with evidence
 - `/review-skill-security` - assess external skills before installing or enabling them
 
-Ponytail Lite is injected automatically by the shared SessionStart hook. The scheduled GitHub
-audit uses `gpt-5.6-sol` with high reasoning and remains read-only.
+Ponytail Lite is injected automatically by the Claude SessionStart hook.
 
 ## Session Notes
 
 Claude sessions auto-save to `~/.claude/projects/`. Use `/archive` after important
-conversations to create a human-readable curated entry in `docs/codex-session-notes.md`.
+conversations to create a human-readable curated entry in `docs/claude-session-notes.md`.

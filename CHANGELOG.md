@@ -20,6 +20,7 @@ This project follows semantic versioning for Git tags and GitHub releases.
 - Claude Code now uses the CLI-supported `claude-fable-5` model with high effort and `bypassPermissions`.
 - Caveman is explicitly disabled to avoid overlap with Karpathy and automatically activated Ponytail.
 - The Notion audit partially adapts production-readiness ideas from Agents Towards Production and no-mistakes without importing their runtimes.
+- Enforced provider boundaries: Claude templates and hooks now live under `.claude`, Codex and Claude auditors own only their respective agent directories, and tests prevent model identifiers from crossing providers.
 
 ## [2.3.0] - 2026-07-16
 

@@ -14,9 +14,6 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = (
     REPO_ROOT
-    / ".codex"
-    / "skills"
-    / "setup-codex-javii"
     / "scripts"
     / "setup_codex_javii.py"
 )
@@ -61,7 +58,9 @@ class BootstrapTests(unittest.TestCase):
                 ".codex/hooks/session_start_ponytail.py",
                 ".codex/agents/daily-project-auditor.toml",
                 ".claude/agents/daily-project-auditor.md",
+                ".claude/hooks/session_start_ponytail.py",
                 ".claude/output-styles/pragmatic.md",
+                "docs/claude-session-notes.md",
                 ".github/codex/prompts/daily-project-health.md",
                 ".github/workflows/daily-project-health.yml",
             ):
@@ -86,6 +85,11 @@ class BootstrapTests(unittest.TestCase):
             )
             self.assertEqual(claude_settings["skillOverrides"]["caveman"], "off")
             self.assertIn("SessionStart", claude_settings["hooks"])
+            claude_hook_command = claude_settings["hooks"]["SessionStart"][0][
+                "hooks"
+            ][0]["command"]
+            self.assertIn("/.claude/hooks/session_start_ponytail.py", claude_hook_command)
+            self.assertNotIn("/.codex/", claude_hook_command)
 
             hook = subprocess.run(
                 [sys.executable, str(target / ".codex/hooks/session_start_ponytail.py")],
@@ -122,6 +126,27 @@ class BootstrapTests(unittest.TestCase):
             self.assertIn(".mcp.json", [path.name for path in second_report.skipped])
             self.assertTrue((target / "AGENTS.md.bak").is_file())
 
+    def test_provider_model_boundaries_are_strict(self) -> None:
+        def combined_text(root: Path) -> str:
+            chunks = []
+            for path in root.rglob("*"):
+                if path.is_file():
+                    chunks.append(path.read_text(encoding="utf-8", errors="ignore"))
+            return "\n".join(chunks).lower()
+
+        codex_text = combined_text(REPO_ROOT / ".codex")
+        claude_text = combined_text(REPO_ROOT / ".claude")
+        self.assertNotIn("claude-fable-5", codex_text)
+        self.assertNotIn("gpt-5.6-sol", claude_text)
+
+        codex_agent = (
+            REPO_ROOT / ".codex/agents/daily-project-auditor.toml"
+        ).read_text(encoding="utf-8")
+        claude_agent = (
+            REPO_ROOT / ".claude/agents/daily-project-auditor.md"
+        ).read_text(encoding="utf-8")
+        self.assertNotIn(".claude/agents", codex_agent)
+        self.assertNotIn(".codex/agents", claude_agent)
 
 if __name__ == "__main__":
     unittest.main()

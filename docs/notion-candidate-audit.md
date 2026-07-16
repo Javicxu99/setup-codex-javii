@@ -59,7 +59,7 @@ Decision meanings: **integrate** = part of the base; **adapt partially** = a nar
 6. Add `review-skill-security` as a universal manual gate, with SkillSpector remaining an optional external scanner rather than an installed dependency.
 7. Keep the remaining specialist candidates discoverable here instead of expanding the runtime, credential, or maintenance surface.
 8. Adapt only the review categories from Agents Towards Production and no-mistakes into a read-only daily auditor; do not import either runtime.
-9. Add coordinated Codex and Claude auditor agents, pragmatic output, and a shared SessionStart hook that activates Ponytail.
+9. Add provider-native Codex and Claude auditor agents, pragmatic output, and separate SessionStart hooks that activate the shared Ponytail discipline without crossing provider configuration.
 
 ## Maintenance and security conclusion
 

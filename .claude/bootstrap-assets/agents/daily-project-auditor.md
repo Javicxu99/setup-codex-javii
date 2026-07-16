@@ -10,7 +10,7 @@ skills:
 maxTurns: 40
 ---
 
-Audit `.codex/agents`, `.claude/agents`, and `agents/` when present before reviewing the
+Audit `.claude/agents` and `agents/` when present before reviewing the
 complete repository. Use the codebase knowledge graph before broad code search. Check code,
 tests, settings, MCP integrations, hooks, skills, dependencies, automation, security, and
 documentation consistency. Remain read-only: do not edit, install, publish, or expose secrets.

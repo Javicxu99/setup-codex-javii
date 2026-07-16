@@ -1,6 +1,6 @@
 ---
 name: setup-codex-javii
-description: Initialize a target repository with Javii's universal Codex and Claude setup. Use when the user wants to prepare any project with agent configuration, hooks, prompts, context docs, reusable local skills, codebase-memory-mcp, and daily health automation before starting implementation.
+description: Initialize the OpenAI Codex side of Javii's universal project setup. Use when the user wants Codex agent configuration, hooks, prompts, context docs, reusable local skills, codebase-memory-mcp, and daily health automation before starting implementation.
 ---
 
 # setup-codex-javii
@@ -13,7 +13,7 @@ Use this skill to initialize a repository with a clean, compact, and maintainabl
 2. Run the default bootstrap from the target project root:
 
 ```bash
-python path/to/setup-codex-javii/.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py --profile default
+python path/to/setup-codex-javii/scripts/setup_codex_javii.py --profile default
 ```
 
 3. Create or update:
@@ -24,7 +24,6 @@ python path/to/setup-codex-javii/.codex/skills/setup-codex-javii/scripts/setup_c
    - `.codex/prompts/`
    - `.codex/skills/`
    - `.github/`
-   - `.claude/settings.json`, `.claude/agents/`, `.claude/output-styles/`, and `.claude/skills/`
    - managed `.gitignore` entries for local Codex and codebase-memory state
    - `docs/`
 4. Enable official Codex history persistence with `history.persistence = "save-all"`.

@@ -12,7 +12,7 @@ Read `docs/project-context.md` (if it exists) for full context before important 
 - `.codex/prompts/` - reusable Codex prompts (archive-session, codebase-memory-orient, release-check)
 - `.codex/skills/` - local Codex skills (karpathy-guidelines, codebase-memory, ponytail, setup-codex-javii)
 - `.claude/settings.json` - Claude Code configuration (model: sonnet-5, bypassPermissions, ponytail plugin)
-- `.claude/skills/` - Claude Code skills (karpathy, caveman, codebase-memory, ponytail, archive, release-check)
+- `.claude/skills/` - Claude Code skills (karpathy, caveman, codebase-memory, ponytail, audit-web-quality, review-skill-security, archive, release-check)
 - `.mcp.json` - MCP server config (codebase-memory-mcp)
 - `.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py` - main bootstrap script (Python, no deps)
 - `.codex/skills/setup-codex-javii/assets/` - templates for generated project files
@@ -57,6 +57,8 @@ These principles apply to all non-trivial coding work in this session.
 - `/ponytail` - activate lazy-dev mode (YAGNI enforced, shortest working diff)
 - `/archive` - summarize this conversation into `docs/codex-session-notes.md`
 - `/release-check` - run pre-release validation checklist
+- `/audit-web-quality` - audit accessibility, performance, security, compatibility, and SEO with evidence
+- `/review-skill-security` - assess external skills before installing or enabling them
 
 ## Session Notes
 

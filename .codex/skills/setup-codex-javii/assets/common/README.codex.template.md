@@ -17,6 +17,8 @@ This project was initialized with the `{{PROFILE}}` profile on {{DATE}}.
 - `karpathy-guidelines`
 - `codebase-memory`
 - `ponytail`
+- `audit-web-quality`
+- `review-skill-security`
 
 ## Graph setup
 

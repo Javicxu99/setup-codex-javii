@@ -10,7 +10,7 @@
 - Templates live in `assets/` so the skill can copy resources without loading every file into context.
 - Keep `AGENTS.md` short and put long context in `docs/`.
 - Create `.bak` backups before overwriting existing files.
-- Keep the active bootstrap universal and domain-neutral.
+- Keep the active bootstrap universal: specialist skills may be present when they are dormant until relevant and add no required toolchain.
 
 ## Non-Goals
 
@@ -18,4 +18,4 @@
 - Do not install tools.
 - Do not create a plugin framework.
 - Do not assume a single architecture for every project.
-- Do not include domain-specific profiles in the active bootstrap until they are explicitly needed.
+- Do not install domain-specific toolchains or generate framework scaffolding before a project needs them.

@@ -10,7 +10,7 @@ Read `docs/project-context.md` for full context before important tasks.
 - `.codex/config.toml` - Codex configuration
 - `.codex/prompts/` - reusable Codex prompts
 - `.codex/skills/` - local Codex skills
-- `.claude/skills/` - Claude Code skills (karpathy, caveman, codebase-memory, ponytail, archive, release-check)
+- `.claude/skills/` - Claude Code skills (karpathy, caveman, codebase-memory, ponytail, audit-web-quality, review-skill-security, archive, release-check)
 - `.mcp.json` - MCP server config (codebase-memory-mcp)
 - `docs/project-context.md` - main project context
 - `docs/architecture.md` - technical architecture
@@ -56,6 +56,8 @@ These principles apply to all non-trivial coding work in this session.
 - `/ponytail` - activate lazy-dev mode (YAGNI enforced, shortest working diff)
 - `/archive` - summarize this conversation into `docs/codex-session-notes.md`
 - `/release-check` - run pre-release validation checklist
+- `/audit-web-quality` - audit accessibility, performance, security, compatibility, and SEO with evidence
+- `/review-skill-security` - assess external skills before installing or enabling them
 
 ## Session Notes
 

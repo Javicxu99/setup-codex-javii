@@ -35,6 +35,8 @@ Included Codex skills:
 - `karpathy-guidelines`: small, surgical, empirically validated changes.
 - `codebase-memory`: graph-first code discovery with a documented fallback.
 - `ponytail`: optional YAGNI-focused implementation mode.
+- `audit-web-quality`: evidence-led web accessibility, performance, security, compatibility, and SEO review.
+- `review-skill-security`: supply-chain review before adopting external skills, plugins, or MCP bundles.
 
 ## Quick start
 
@@ -56,7 +58,7 @@ Or run the dependency-free Python entry point:
 python C:\path\to\setup-codex-javii\.codex\skills\setup-codex-javii\scripts\setup_codex_javii.py --profile default
 ```
 
-The script detects `.git`, `pyproject.toml`, `package.json`, `Cargo.toml`, or `go.mod`. Before overwriting a managed destination it creates `.bak`, `.bak.1`, and later backups. When `.mcp.json` already exists, it preserves its servers and adds or updates only `codebase-memory-mcp`.
+The script detects `.git`, `pyproject.toml`, `package.json`, `Cargo.toml`, or `go.mod`. Before overwriting a managed destination it creates `.bak`, `.bak.1`, and later backups. When `.mcp.json` already exists, including UTF-8 files with a BOM, it preserves its servers and adds or updates only `codebase-memory-mcp`.
 
 ## Codebase Memory MCP
 
@@ -86,7 +88,7 @@ Use `rg` and direct file reads for literals, configuration, non-code files, or w
 
 ## Claude Code
 
-The bootstrap also generates Claude Code infrastructure with medium effort, broad local permissions, explicit secret-read denials, project MCP enablement, and matching Karpathy, codebase-memory, Ponytail, archive, and release-check skills.
+The bootstrap also generates Claude Code infrastructure with medium effort, broad local permissions, explicit secret-read denials, project MCP enablement, and matching Karpathy, codebase-memory, Ponytail, web-quality, skill-security, archive, and release-check skills.
 
 ## Validation
 
@@ -106,7 +108,7 @@ git status --short --branch
 ## Design constraints
 
 - Standard Python only; no runtime package dependency.
-- Universal defaults rather than domain-specific scaffolding.
+- Universal, dormant-on-demand skills rather than domain-specific scaffolding or installed toolchains.
 - Small operational `AGENTS.md`; durable context belongs in `docs/`.
 - No automatic binary installation or secret handling.
 - Generated local state and raw transcripts remain outside version control.

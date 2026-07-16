@@ -150,7 +150,7 @@ def write_mcp_json(target_root: Path, report: Report) -> None:
         return
 
     try:
-        content = json.loads(destination.read_text(encoding="utf-8"))
+        content = json.loads(destination.read_text(encoding="utf-8-sig"))
     except (json.JSONDecodeError, OSError) as exc:
         raise RuntimeError(f"Cannot safely update {destination}: {exc}") from exc
 
@@ -264,6 +264,14 @@ def bootstrap(profile: str) -> Report:
             assets / "skills" / "ponytail" / "SKILL.md",
             target_root / ".codex" / "skills" / "ponytail" / "SKILL.md",
         ),
+        (
+            assets / "skills" / "audit-web-quality" / "SKILL.md",
+            target_root / ".codex" / "skills" / "audit-web-quality" / "SKILL.md",
+        ),
+        (
+            assets / "skills" / "review-skill-security" / "SKILL.md",
+            target_root / ".codex" / "skills" / "review-skill-security" / "SKILL.md",
+        ),
         # Claude Code infrastructure
         (
             assets / "claude" / "CLAUDE.template.md",
@@ -296,6 +304,14 @@ def bootstrap(profile: str) -> Report:
         (
             assets / "claude" / "skills" / "release-check" / "SKILL.md",
             target_root / ".claude" / "skills" / "release-check" / "SKILL.md",
+        ),
+        (
+            assets / "claude" / "skills" / "audit-web-quality" / "SKILL.md",
+            target_root / ".claude" / "skills" / "audit-web-quality" / "SKILL.md",
+        ),
+        (
+            assets / "claude" / "skills" / "review-skill-security" / "SKILL.md",
+            target_root / ".claude" / "skills" / "review-skill-security" / "SKILL.md",
         ),
     ]
 
@@ -333,7 +349,7 @@ def main() -> int:
     print("  - Review AGENTS.md and docs/project-context.md.")
     print("  - Add project-specific details to docs/architecture.md and docs/task-log.md.")
     print("  - Review CLAUDE.md and .claude/settings.json for Claude Code configuration.")
-    print("  - Claude skills available: /karpathy /caveman /codebase-memory /ponytail /archive /release-check")
+    print("  - Claude skills available: /karpathy /caveman /codebase-memory /ponytail /archive /release-check /audit-web-quality /review-skill-security")
     print("  - Install codebase-memory-mcp (see docs/codebase-memory.md) then index this project.")
     print("  - Run your normal validation before committing generated files.")
     return 0

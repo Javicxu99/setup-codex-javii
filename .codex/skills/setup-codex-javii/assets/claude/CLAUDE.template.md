@@ -8,9 +8,13 @@ Read `docs/project-context.md` for full context before important tasks.
 
 - `AGENTS.md` - working rules for Codex
 - `.codex/config.toml` - Codex configuration
+- `.codex/agents/` - read-only high-reasoning project auditor
 - `.codex/prompts/` - reusable Codex prompts
 - `.codex/skills/` - local Codex skills
-- `.claude/skills/` - Claude Code skills (karpathy, caveman, codebase-memory, ponytail, audit-web-quality, review-skill-security, archive, release-check)
+- `.claude/settings.json` - Claude Code configuration (`claude-fable-5`, high, Pragmatic, bypassPermissions)
+- `.claude/agents/` - matching read-only project auditor
+- `.claude/output-styles/` - concise Pragmatic output style
+- `.claude/skills/` - Claude Code skills (karpathy, codebase-memory, ponytail, audit-web-quality, review-skill-security, archive, release-check; Caveman retained but disabled)
 - `.mcp.json` - MCP server config (codebase-memory-mcp)
 - `docs/project-context.md` - main project context
 - `docs/architecture.md` - technical architecture
@@ -51,13 +55,16 @@ These principles apply to all non-trivial coding work in this session.
 ## Claude Code Skills Available
 
 - `/karpathy` - re-anchor to full karpathy discipline (useful after long conversations drift)
-- `/caveman` - switch to maximum-simplicity brutalist mode (no abstractions, just make it work)
+- `/caveman` - retained for provenance but disabled by default in `skillOverrides`
 - `/codebase-memory` - orient using Codebase Memory MCP knowledge graph before broad tasks
 - `/ponytail` - activate lazy-dev mode (YAGNI enforced, shortest working diff)
 - `/archive` - summarize this conversation into `docs/codex-session-notes.md`
 - `/release-check` - run pre-release validation checklist
 - `/audit-web-quality` - audit accessibility, performance, security, compatibility, and SEO with evidence
 - `/review-skill-security` - assess external skills before installing or enabling them
+
+Ponytail Lite is injected automatically by the shared SessionStart hook. The scheduled GitHub
+audit uses `gpt-5.6-sol` with high reasoning and remains read-only.
 
 ## Session Notes
 

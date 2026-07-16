@@ -216,6 +216,15 @@ def bootstrap(profile: str) -> Report:
             target_root / "docs" / "codex-session-notes.md",
         ),
         (common / "README.codex.template.md", target_root / "docs" / "README.codex.md"),
+        (assets / "hooks" / "hooks.json", target_root / ".codex" / "hooks.json"),
+        (
+            assets / "hooks" / "session_start_ponytail.py",
+            target_root / ".codex" / "hooks" / "session_start_ponytail.py",
+        ),
+        (
+            assets / "agents" / "daily-project-auditor.toml",
+            target_root / ".codex" / "agents" / "daily-project-auditor.toml",
+        ),
         (
             assets / "prompts" / "archive-session.md",
             target_root / ".codex" / "prompts" / "archive-session.md",
@@ -243,6 +252,14 @@ def bootstrap(profile: str) -> Report:
         (
             assets / "github" / "ISSUE_TEMPLATE" / "config.yml",
             target_root / ".github" / "ISSUE_TEMPLATE" / "config.yml",
+        ),
+        (
+            assets / "github" / "codex" / "prompts" / "daily-project-health.md",
+            target_root / ".github" / "codex" / "prompts" / "daily-project-health.md",
+        ),
+        (
+            assets / "github" / "workflows" / "daily-project-health.yml",
+            target_root / ".github" / "workflows" / "daily-project-health.yml",
         ),
         (
             assets / "skills" / "project-orientation" / "SKILL.md",
@@ -280,6 +297,14 @@ def bootstrap(profile: str) -> Report:
         (
             assets / "claude" / "settings.template.json",
             target_root / ".claude" / "settings.json",
+        ),
+        (
+            assets / "claude" / "agents" / "daily-project-auditor.md",
+            target_root / ".claude" / "agents" / "daily-project-auditor.md",
+        ),
+        (
+            assets / "claude" / "output-styles" / "pragmatic.md",
+            target_root / ".claude" / "output-styles" / "pragmatic.md",
         ),
         (
             assets / "claude" / "skills" / "karpathy" / "SKILL.md",

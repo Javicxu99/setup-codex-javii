@@ -1,0 +1,84 @@
+name: Daily project health
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: daily-project-health
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Require OpenAI API key
+        shell: bash
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "Repository secret OPENAI_API_KEY is required." >&2
+            exit 1
+          fi
+
+      - name: Run read-only Codex audit
+        uses: openai/codex-action@b11346a6fa031e2e164ab4b7c7ea201afffd7d59 # v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: .github/codex/prompts/daily-project-health.md
+          output-file: daily-project-health.md
+          model: gpt-5.6-sol
+          effort: high
+          sandbox: read-only
+          codex-args: '["--ephemeral"]'
+
+      - name: Add report to job summary
+        if: always() && hashFiles('daily-project-health.md') != ''
+        shell: bash
+        run: cat daily-project-health.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: daily-project-health-${{ github.run_id }}
+          path: daily-project-health.md
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Create or update actionable-findings issue
+        if: hashFiles('daily-project-health.md') != ''
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('daily-project-health.md', 'utf8');
+            if (!report.startsWith('RESULT: ACTION_REQUIRED')) return;
+            const title = 'Daily project health: actionable findings';
+            const { owner, repo } = context.repo;
+            const open = await github.rest.issues.listForRepo({
+              owner, repo, state: 'open', per_page: 100
+            });
+            const existing = open.data.find((issue) => issue.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: existing.number, body: report
+              });
+            } else {
+              await github.rest.issues.create({
+                owner, repo, title, body: report
+              });
+            }

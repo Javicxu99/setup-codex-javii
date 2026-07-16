@@ -9,9 +9,12 @@ Read `docs/project-context.md` (if it exists) for full context before important 
 
 - `AGENTS.md` - working rules for Codex
 - `.codex/config.toml` - Codex configuration (model, reasoning, history)
+- `.codex/agents/` - read-only high-reasoning project auditor
 - `.codex/prompts/` - reusable Codex prompts (archive-session, codebase-memory-orient, release-check)
 - `.codex/skills/` - local Codex skills (karpathy-guidelines, codebase-memory, ponytail, setup-codex-javii)
-- `.claude/settings.json` - Claude Code configuration (model: sonnet-5, bypassPermissions, ponytail plugin)
+- `.claude/settings.json` - Claude Code configuration (`claude-fable-5`, high, Pragmatic, bypassPermissions)
+- `.claude/agents/` - matching read-only project auditor
+- `.claude/output-styles/` - concise Pragmatic output style
 - `.claude/skills/` - Claude Code skills (karpathy, caveman, codebase-memory, ponytail, audit-web-quality, review-skill-security, archive, release-check)
 - `.mcp.json` - MCP server config (codebase-memory-mcp)
 - `.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py` - main bootstrap script (Python, no deps)
@@ -52,13 +55,16 @@ These principles apply to all non-trivial coding work in this session.
 ## Claude Code Skills Available
 
 - `/karpathy` - re-anchor to full karpathy discipline (useful after long conversations drift)
-- `/caveman` - switch to maximum-simplicity brutalist mode (no abstractions, just make it work)
+- `/caveman` - retained for provenance but disabled by default in `skillOverrides`
 - `/codebase-memory` - orient using Codebase Memory MCP knowledge graph before broad tasks
 - `/ponytail` - activate lazy-dev mode (YAGNI enforced, shortest working diff)
 - `/archive` - summarize this conversation into `docs/codex-session-notes.md`
 - `/release-check` - run pre-release validation checklist
 - `/audit-web-quality` - audit accessibility, performance, security, compatibility, and SEO with evidence
 - `/review-skill-security` - assess external skills before installing or enabling them
+
+Ponytail Lite is injected automatically by the shared SessionStart hook. The scheduled GitHub
+audit uses `gpt-5.6-sol` with high reasoning and remains read-only.
 
 ## Session Notes
 

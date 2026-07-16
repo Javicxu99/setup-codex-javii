@@ -12,9 +12,14 @@ model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "medium"
 model_reasoning_summary = "auto"
 model_verbosity = "medium"
+personality = "pragmatic"
 approval_policy = "never"
 sandbox_mode = "danger-full-access"
 history.persistence = "save-all"
+
+[features]
+hooks = true
+multi_agent = true
 ```
 
 `gpt5.6sol` is the requested human-facing name; the supported Codex identifier is `gpt-5.6-sol`. Full access is deliberate for a personal bootstrap and should only be used in trusted repositories. Organization requirements can still restrict it.
@@ -22,11 +27,11 @@ history.persistence = "save-all"
 ## What it generates
 
 - `AGENTS.md`, `CLAUDE.md`, `CHANGELOG.md`, and a managed `.gitignore` block.
-- `.codex/config.toml`, reusable prompts, and project-local skills.
-- `.claude/settings.json` and matching Claude Code skills.
+- `.codex/config.toml`, a Ponytail `SessionStart` hook, reusable prompts, skills, and a read-only high-reasoning auditor agent.
+- `.claude/settings.json`, matching skills and auditor agent, and the Pragmatic output style.
 - `.mcp.json` with `codebase-memory-mcp`, preserving other configured servers.
 - Project context, architecture, task log, graph guidance, and curated session notes under `docs/`.
-- Lightweight GitHub issue and pull-request templates.
+- Lightweight GitHub templates and an optional daily project-health workflow.
 
 Included Codex skills:
 
@@ -88,7 +93,13 @@ Use `rg` and direct file reads for literals, configuration, non-code files, or w
 
 ## Claude Code
 
-The bootstrap also generates Claude Code infrastructure with medium effort, broad local permissions, explicit secret-read denials, project MCP enablement, and matching Karpathy, codebase-memory, Ponytail, web-quality, skill-security, archive, and release-check skills.
+The generated settings use the exact model accepted by the installed Claude CLI, `claude-fable-5`, with `high` effort, the `Pragmatic` output style, project MCP enablement, and `bypassPermissions`. Secret reads remain denied explicitly. This autonomy is intended only for trusted repositories. Caveman remains available in the template for provenance but is disabled through `skillOverrides`; Ponytail is injected at startup, resume, and clear through the shared SessionStart hook.
+
+## Daily project health
+
+`.github/workflows/daily-project-health.yml` runs every day at 03:17 UTC and can also be started manually. It invokes `gpt-5.6-sol` with `high` reasoning in a read-only sandbox, audits agent definitions first and then the complete repository, uploads a 30-day report, and opens or updates an issue only for actionable findings.
+
+After bootstrap, add an `OPENAI_API_KEY` Actions secret to the target repository. Without that secret the workflow fails safely with an explicit message. A Codex desktop scheduled task is not generated because desktop tasks are machine-local and require the target checkout to be registered in the app; the repository workflow is portable and versioned.
 
 ## Validation
 

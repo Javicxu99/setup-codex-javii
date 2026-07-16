@@ -8,6 +8,19 @@ This project follows semantic versioning for Git tags and GitHub releases.
 
 - No unreleased changes.
 
+## [2.4.0] - 2026-07-16
+
+### Added
+- Coordinated read-only daily auditor agents for Codex and Claude Code.
+- Ponytail SessionStart hook shared by both agent environments.
+- Portable scheduled GitHub audit using `gpt-5.6-sol`, high reasoning, and immutable action pins.
+- Pragmatic Claude output style and bootstrap regression coverage for the new infrastructure.
+
+### Changed
+- Claude Code now uses the CLI-supported `claude-fable-5` model with high effort and `bypassPermissions`.
+- Caveman is explicitly disabled to avoid overlap with Karpathy and automatically activated Ponytail.
+- The Notion audit partially adapts production-readiness ideas from Agents Towards Production and no-mistakes without importing their runtimes.
+
 ## [2.3.0] - 2026-07-16
 
 ### Added

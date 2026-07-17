@@ -1,14 +1,14 @@
 ---
-description: Archive this Claude conversation by appending a curated human-readable summary to docs/codex-session-notes.md. Captures decisions, files changed, validation run, and remaining risks.
+description: Archive this Claude conversation by appending a curated human-readable summary to docs/claude-session-notes.md. Captures decisions, files changed, validation run, and remaining risks.
 ---
 
 # Archive Session
 
-Summarize this Claude conversation into `docs/codex-session-notes.md`.
+Summarize this Claude conversation into `docs/claude-session-notes.md`.
 
 ## What to Write
 
-Append a new entry to `docs/codex-session-notes.md` with this structure:
+Append a new entry to `docs/claude-session-notes.md` with this structure:
 
 ```
 ## Session - {{DATE}}

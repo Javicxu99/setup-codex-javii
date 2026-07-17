@@ -20,7 +20,7 @@ curl -fsSL https://raw.githubusercontent.com/DeusData/codebase-memory-mcp/main/i
 Invoke-WebRequest -Uri https://raw.githubusercontent.com/DeusData/codebase-memory-mcp/main/install.ps1 -OutFile install.ps1; .\install.ps1
 ```
 
-Restart your agent after install. The installer configures `~/.claude/.mcp.json`, Codex, VS Code, and other agents automatically.
+Restart the active agent after install. The installer configures supported agent clients automatically.
 
 ## Index this project (once per project)
 
@@ -34,7 +34,7 @@ The project `.mcp.json` at the root registers the MCP server — no per-user con
 
 When codebase-memory-mcp is available:
 
-- Prefer `.codex/skills/codebase-memory` or `.claude/skills/codebase-memory` before large implementation or refactor tasks.
+- Prefer the current provider's local `codebase-memory` skill before large implementation or refactor tasks.
 - Use `get_architecture` for project overview, `search_graph` for symbols, `trace_path` for impact.
 - Use direct file reads only for files the graph has already narrowed down.
 - Keep normal validation as source of truth.

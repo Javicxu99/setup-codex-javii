@@ -8,6 +8,32 @@ This project follows semantic versioning for Git tags and GitHub releases.
 
 - No unreleased changes.
 
+## [2.4.0] - 2026-07-16
+
+### Added
+- Coordinated read-only daily auditor agents for Codex and Claude Code.
+- Ponytail SessionStart hook shared by both agent environments.
+- Portable scheduled GitHub audit using `gpt-5.6-sol`, high reasoning, and immutable action pins.
+- Pragmatic Claude output style and bootstrap regression coverage for the new infrastructure.
+
+### Changed
+- Claude Code now uses the CLI-supported `claude-fable-5` model with high effort and `bypassPermissions`.
+- Caveman is explicitly disabled to avoid overlap with Karpathy and automatically activated Ponytail.
+- The Notion audit partially adapts production-readiness ideas from Agents Towards Production and no-mistakes without importing their runtimes.
+- Enforced provider boundaries: Claude templates and hooks now live under `.claude`, Codex and Claude auditors own only their respective agent directories, and tests prevent model identifiers from crossing providers.
+
+## [2.3.0] - 2026-07-16
+
+### Added
+- Compact `audit-web-quality` skill for evidence-led accessibility, Core Web Vitals, performance, security, compatibility, and SEO reviews.
+- Universal `review-skill-security` gate for third-party skills, with optional local SkillSpector static analysis.
+- Standard-library regression coverage for generated skills, repeat runs, and additive BOM-encoded MCP configuration.
+
+### Changed
+- Bootstrap now generates both new skills for Codex and Claude Code without installing additional runtime dependencies.
+- Notion audit decisions now reflect the deeper source, dependency, license, portability, and maintenance review.
+- Existing `.mcp.json` files with a UTF-8 BOM are now merged safely instead of failing JSON parsing.
+
 ## [2.2.0] - 2026-07-15
 
 ### Added

@@ -1,6 +1,6 @@
 ---
 name: setup-codex-javii
-description: Initialize a target repository with Javii's universal Codex setup. Use when the user wants to prepare any project with AGENTS.md, .codex/config.toml, prompts, context docs, and reusable local skills before starting implementation.
+description: Initialize the OpenAI Codex side of Javii's universal project setup. Use when the user wants Codex agent configuration, hooks, prompts, context docs, reusable local skills, codebase-memory-mcp, and daily health automation before starting implementation.
 ---
 
 # setup-codex-javii
@@ -13,13 +13,14 @@ Use this skill to initialize a repository with a clean, compact, and maintainabl
 2. Run the default bootstrap from the target project root:
 
 ```bash
-python path/to/setup-codex-javii/.codex/skills/setup-codex-javii/scripts/setup_codex_javii.py --profile default
+python path/to/setup-codex-javii/scripts/setup_codex_javii.py --profile default
 ```
 
 3. Create or update:
    - `AGENTS.md`
    - `CHANGELOG.md`
    - `.codex/config.toml`
+   - `.codex/agents/` and `.codex/hooks.json`
    - `.codex/prompts/`
    - `.codex/skills/`
    - `.github/`
@@ -33,12 +34,14 @@ python path/to/setup-codex-javii/.codex/skills/setup-codex-javii/scripts/setup_c
    - `codebase-memory`
    - `update-project-context`
    - `karpathy-guidelines`
-8. Create `.bak` backups before overwriting any existing file.
-9. Review the final report of created files, files updated with backup, backups, and next steps.
+8. Add the read-only daily auditor, Ponytail SessionStart hook, and portable scheduled GitHub audit.
+9. Create `.bak` backups before overwriting any existing file.
+10. Review the final report of created files, files updated with backup, backups, and next steps.
 
 ## Rules
 
 - Do not install dependencies.
+- Do not schedule the daily GitHub audit until the target has an `OPENAI_API_KEY` Actions secret.
 - Do not commit unless explicitly asked.
 - Keep `AGENTS.md` brief; long context belongs in `docs/`.
 - Store curated conversation summaries in `docs/codex-session-notes.md`, not raw transcripts.

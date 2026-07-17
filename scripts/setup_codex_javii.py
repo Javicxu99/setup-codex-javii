@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bootstrap a project with Javii's Codex setup."""
+"""Bootstrap a project with provider-separated Codex and Claude environments."""
 
 from __future__ import annotations
 
@@ -150,7 +150,7 @@ def write_mcp_json(target_root: Path, report: Report) -> None:
         return
 
     try:
-        content = json.loads(destination.read_text(encoding="utf-8"))
+        content = json.loads(destination.read_text(encoding="utf-8-sig"))
     except (json.JSONDecodeError, OSError) as exc:
         raise RuntimeError(f"Cannot safely update {destination}: {exc}") from exc
 
@@ -173,12 +173,18 @@ def write_mcp_json(target_root: Path, report: Report) -> None:
 
 def bootstrap(profile: str) -> Report:
     script_path = Path(__file__).resolve()
-    bootstrap_skill_root = script_path.parents[1]
+    source_root = script_path.parents[1]
+    bootstrap_skill_root = source_root / ".codex" / "skills" / "setup-codex-javii"
     assets = bootstrap_skill_root / "assets"
+    claude_assets = source_root / ".claude" / "bootstrap-assets"
     common = assets / "common"
     target_root = find_project_root(Path.cwd())
 
-    if not (bootstrap_skill_root / "SKILL.md").exists() or not assets.exists():
+    if (
+        not (bootstrap_skill_root / "SKILL.md").exists()
+        or not assets.exists()
+        or not claude_assets.exists()
+    ):
         raise RuntimeError(
             "Could not locate the setup-codex-javii skill assets. "
             "Run the script from a complete clone of this repository."
@@ -216,6 +222,15 @@ def bootstrap(profile: str) -> Report:
             target_root / "docs" / "codex-session-notes.md",
         ),
         (common / "README.codex.template.md", target_root / "docs" / "README.codex.md"),
+        (assets / "hooks" / "hooks.json", target_root / ".codex" / "hooks.json"),
+        (
+            assets / "hooks" / "session_start_ponytail.py",
+            target_root / ".codex" / "hooks" / "session_start_ponytail.py",
+        ),
+        (
+            assets / "agents" / "daily-project-auditor.toml",
+            target_root / ".codex" / "agents" / "daily-project-auditor.toml",
+        ),
         (
             assets / "prompts" / "archive-session.md",
             target_root / ".codex" / "prompts" / "archive-session.md",
@@ -245,6 +260,14 @@ def bootstrap(profile: str) -> Report:
             target_root / ".github" / "ISSUE_TEMPLATE" / "config.yml",
         ),
         (
+            assets / "github" / "codex" / "prompts" / "daily-project-health.md",
+            target_root / ".github" / "codex" / "prompts" / "daily-project-health.md",
+        ),
+        (
+            assets / "github" / "workflows" / "daily-project-health.yml",
+            target_root / ".github" / "workflows" / "daily-project-health.yml",
+        ),
+        (
             assets / "skills" / "project-orientation" / "SKILL.md",
             target_root / ".codex" / "skills" / "project-orientation" / "SKILL.md",
         ),
@@ -264,38 +287,70 @@ def bootstrap(profile: str) -> Report:
             assets / "skills" / "ponytail" / "SKILL.md",
             target_root / ".codex" / "skills" / "ponytail" / "SKILL.md",
         ),
+        (
+            assets / "skills" / "audit-web-quality" / "SKILL.md",
+            target_root / ".codex" / "skills" / "audit-web-quality" / "SKILL.md",
+        ),
+        (
+            assets / "skills" / "review-skill-security" / "SKILL.md",
+            target_root / ".codex" / "skills" / "review-skill-security" / "SKILL.md",
+        ),
         # Claude Code infrastructure
         (
-            assets / "claude" / "CLAUDE.template.md",
+            claude_assets / "CLAUDE.template.md",
             target_root / "CLAUDE.md",
         ),
         (
-            assets / "claude" / "settings.template.json",
+            claude_assets / "settings.template.json",
             target_root / ".claude" / "settings.json",
         ),
         (
-            assets / "claude" / "skills" / "karpathy" / "SKILL.md",
+            claude_assets / "agents" / "daily-project-auditor.md",
+            target_root / ".claude" / "agents" / "daily-project-auditor.md",
+        ),
+        (
+            claude_assets / "output-styles" / "pragmatic.md",
+            target_root / ".claude" / "output-styles" / "pragmatic.md",
+        ),
+        (
+            claude_assets / "skills" / "karpathy" / "SKILL.md",
             target_root / ".claude" / "skills" / "karpathy" / "SKILL.md",
         ),
         (
-            assets / "claude" / "skills" / "caveman" / "SKILL.md",
+            claude_assets / "skills" / "caveman" / "SKILL.md",
             target_root / ".claude" / "skills" / "caveman" / "SKILL.md",
         ),
         (
-            assets / "claude" / "skills" / "codebase-memory" / "SKILL.md",
+            claude_assets / "skills" / "codebase-memory" / "SKILL.md",
             target_root / ".claude" / "skills" / "codebase-memory" / "SKILL.md",
         ),
         (
-            assets / "claude" / "skills" / "ponytail" / "SKILL.md",
+            claude_assets / "skills" / "ponytail" / "SKILL.md",
             target_root / ".claude" / "skills" / "ponytail" / "SKILL.md",
         ),
         (
-            assets / "claude" / "skills" / "archive" / "SKILL.md",
+            claude_assets / "skills" / "archive" / "SKILL.md",
             target_root / ".claude" / "skills" / "archive" / "SKILL.md",
         ),
         (
-            assets / "claude" / "skills" / "release-check" / "SKILL.md",
+            claude_assets / "skills" / "release-check" / "SKILL.md",
             target_root / ".claude" / "skills" / "release-check" / "SKILL.md",
+        ),
+        (
+            claude_assets / "skills" / "audit-web-quality" / "SKILL.md",
+            target_root / ".claude" / "skills" / "audit-web-quality" / "SKILL.md",
+        ),
+        (
+            claude_assets / "skills" / "review-skill-security" / "SKILL.md",
+            target_root / ".claude" / "skills" / "review-skill-security" / "SKILL.md",
+        ),
+        (
+            claude_assets / "hooks" / "session_start_ponytail.py",
+            target_root / ".claude" / "hooks" / "session_start_ponytail.py",
+        ),
+        (
+            claude_assets / "claude-session-notes.template.md",
+            target_root / "docs" / "claude-session-notes.md",
         ),
     ]
 
@@ -333,7 +388,7 @@ def main() -> int:
     print("  - Review AGENTS.md and docs/project-context.md.")
     print("  - Add project-specific details to docs/architecture.md and docs/task-log.md.")
     print("  - Review CLAUDE.md and .claude/settings.json for Claude Code configuration.")
-    print("  - Claude skills available: /karpathy /caveman /codebase-memory /ponytail /archive /release-check")
+    print("  - Claude skills available: /karpathy /caveman /codebase-memory /ponytail /archive /release-check /audit-web-quality /review-skill-security")
     print("  - Install codebase-memory-mcp (see docs/codebase-memory.md) then index this project.")
     print("  - Run your normal validation before committing generated files.")
     return 0

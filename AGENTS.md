@@ -24,6 +24,7 @@ This repo is a Codex skill bootstrapper for initializing projects with my person
 - Claude Code sessions auto-save to `~/.claude/projects/`; do not try to configure persistence files beyond the Stop hook.
 - Preserve the intentionally broad autonomy settings for trusted personal repositories.
 - Do not add model-backed CI that requires an API key; project health audits are manual from Codex Desktop.
+- Before release, record AI applicability/classification in `docs/compliance/eu-ai-act/intake.json` and run `python scripts/check_eu_ai_act.py --root .`; treat unknown, prohibited, and possible high-risk uses as escalation gates.
 
 ## Done
 

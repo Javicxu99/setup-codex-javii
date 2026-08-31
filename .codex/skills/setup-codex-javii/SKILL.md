@@ -1,6 +1,6 @@
 ---
 name: setup-codex-javii
-description: Preview and initialize Javii's provider-separated Codex and Claude Code project setup, including local instructions, prompts, skills, context docs, optional codebase-memory-mcp registration, and manual health auditing without API credentials.
+description: Preview and initialize Javii's provider-separated Codex and Claude Code project setup, including local instructions, prompts, skills, context docs, conditional EU AI Act governance, optional codebase-memory-mcp registration, and manual health auditing without API credentials.
 ---
 
 # setup-codex-javii
@@ -18,7 +18,7 @@ python path/to/setup-codex-javii/scripts/setup_codex_javii.py --target .
 ```
 
 3. Review files to create, files to back up and update, unchanged files, preserved files, and warnings.
-4. Select a subset when needed with `--components codex claude docs github shared`.
+4. Select a subset when needed with `--components codex claude docs github compliance shared`.
 5. Use `--on-conflict skip` when every existing destination must remain untouched.
 6. Apply only after the preview is acceptable:
 
@@ -39,6 +39,7 @@ python path/to/setup-codex-javii/scripts/setup_codex_javii.py --target . --apply
 - `.mcp.json` is merged additively and never installs the optional server.
 - GitHub issue and pull request templates are generated without an AI workflow.
 - `.codex/prompts/project-health-audit.md` provides an on-demand, read-only audit for Codex Desktop.
+- The default `compliance` component adds a dated, conditional EU AI Act intake, deterministic local checker, and manual provider skills without claiming certification.
 - No `OPENAI_API_KEY`, API call, or external scheduled automation is required.
 
 ## Rules
@@ -51,3 +52,4 @@ python path/to/setup-codex-javii/scripts/setup_codex_javii.py --target . --apply
 - Keep the setup universal; domain-specific context belongs in the generated project docs.
 - Treat codebase-memory-mcp as optional and preserve direct file search as the fallback.
 - Keep GitHub traceability lightweight with changelog entries, issues, pull requests, and version tags.
+- Fail closed on critical classification unknowns and escalate prohibited or possible high-risk uses to qualified human/legal review.

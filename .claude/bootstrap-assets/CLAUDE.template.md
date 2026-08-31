@@ -12,7 +12,7 @@ This generated profile uses `bypassPermissions` and is intended only for a trust
 - `.claude/agents/` - Claude-specific on-demand read-only project auditor
 - `.claude/hooks/` - Claude SessionStart hooks
 - `.claude/output-styles/` - concise Pragmatic output style
-- `.claude/skills/` - Claude Code skills (karpathy, codebase-memory, ponytail, audit-web-quality, review-skill-security, archive, release-check; Caveman retained but disabled)
+- `.claude/skills/` - Claude Code skills (karpathy, codebase-memory, ponytail, audit-web-quality, review-skill-security, archive, release-check, eu-ai-act-governance; Caveman retained but disabled)
 - `.mcp.json` - MCP server config (codebase-memory-mcp)
 - `docs/project-context.md` - main project context
 - `docs/architecture.md` - technical architecture
@@ -58,10 +58,15 @@ These principles apply to all non-trivial coding work in this session.
 - `/ponytail` - activate lazy-dev mode (YAGNI enforced, shortest working diff)
 - `/archive` - summarize this conversation into `docs/claude-session-notes.md`
 - `/release-check` - run pre-release validation checklist
+- `/eu-ai-act-governance` - complete or refresh the conditional EU AI Act intake and evidence
 - `/audit-web-quality` - audit accessibility, performance, security, compatibility, and SEO with evidence
 - `/review-skill-security` - assess external skills before installing or enabling them
 
 Ponytail Lite is injected automatically by the Claude SessionStart hook.
+
+Before release, complete `docs/compliance/eu-ai-act/intake.json` and run
+`python scripts/check_eu_ai_act.py --root .`. Escalate prohibited, unknown, and possible high-risk
+uses rather than claiming legal compliance or certification.
 
 ## Session Notes
 

@@ -8,6 +8,37 @@ This project follows semantic versioning for Git tags and GitHub releases.
 
 - No unreleased changes.
 
+## [3.1.0] - 2026-08-31
+
+### Added
+
+- Default, independently selectable `compliance` component with a dated EU AI Act source baseline,
+  proportional intake/evidence templates, and inactive-until-needed high-risk preparation.
+- Dependency-free `scripts/check_eu_ai_act.py` gate with `PASS`, `WARNING`,
+  `LEGAL_REVIEW_REQUIRED`, and `BLOCKED` results plus distinct exit codes.
+- Manual `eu-ai-act-governance` Codex/Claude skills and Codex intake prompt; no model-backed or
+  API-key-backed legal automation.
+- Deterministic scenarios for no AI, coding assistants, public chatbots, deepfakes, CV screening,
+  workplace emotion recognition, critical unknowns, and legal-baseline milestones.
+
+### Changed
+
+- Release, pull-request, project-health, project-context, and agent instructions now link to the
+  canonical conditional governance record instead of duplicating legal text.
+- The later Notion row `Legislacion de IA` is recorded as a secondary lead and checked against
+  official EU and Spanish parliamentary sources without importing Notion content.
+- Default bootstrap output now includes the additive compliance files; existing preview, backup,
+  atomic-write, provider-boundary, and full-autonomy behavior is unchanged.
+- Project-owned compliance intake and evidence files are create-only, so later bootstrap updates
+  preserve recorded decisions while managed law/checker files remain backup-safe.
+
+### Compatibility
+
+- No CLI option is removed or renamed. Targets that do not want governance files can omit the
+  `compliance` component explicitly.
+- A newly generated intake starts as `UNKNOWN_BLOCKED` until a human records the classification;
+  this is an intentional release gate, not a claim of legal non-compliance.
+
 ## [3.0.0] - 2026-08-31
 
 ### Added

@@ -11,6 +11,7 @@ Checklist:
 5. Search for secrets, API-key requirements, scheduled model workflows, raw transcripts, temporary files, and accidental graph database files.
 6. Confirm template/live-copy synchronization checks pass.
 7. Confirm `docs/release-process.md` matches the branch and pull-request flow.
-8. Summarize release readiness and any blockers.
+8. If `docs/compliance/eu-ai-act/` exists, run `python scripts/check_eu_ai_act.py --root .`; no AI project may release without a documented classification, and `BLOCKED` or `LEGAL_REVIEW_REQUIRED` stops release.
+9. Summarize release readiness and any blockers.
 
 Do not commit, tag, or push unless explicitly asked.

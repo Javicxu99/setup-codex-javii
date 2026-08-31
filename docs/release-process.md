@@ -14,8 +14,9 @@ Use semantic versioning and publish releases through a reviewed branch.
 Use Python 3.11 or newer:
 
 ```powershell
-python -m py_compile scripts\setup_codex_javii.py
+python -m py_compile scripts\setup_codex_javii.py scripts\check_eu_ai_act.py
 python -m unittest discover -s tests -v
+python scripts\check_eu_ai_act.py --root .
 git diff --check
 git status --short --branch
 ```
@@ -23,7 +24,8 @@ git status --short --branch
 The tests must include an end-to-end temporary repository run covering default preview,
 explicit apply, repeat idempotency, backup creation for a changed file, conflict preservation,
 component isolation, invalid MCP preflight, provider boundaries, and absence of the retired
-scheduled workflow.
+scheduled workflow. It must also cover the required EU AI Act classification scenarios,
+baseline freshness, and an installed-project checker run.
 
 Inspect both `git diff` and `git diff --stat` before committing.
 
@@ -31,7 +33,7 @@ Inspect both `git diff` and `git diff --stat` before committing.
 
 ```powershell
 git add .
-git commit -m "Release 3.0.0 safe bootstrap workflow"
+git commit -m "Release 3.1.0 EU AI Act governance baseline"
 git push -u origin HEAD
 ```
 

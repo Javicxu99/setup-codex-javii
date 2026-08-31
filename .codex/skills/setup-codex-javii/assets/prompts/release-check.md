@@ -10,6 +10,7 @@ Checklist:
 4. Search for secrets, API-key requirements, scheduled model workflows, raw transcripts, temporary files, accidental graph database files, and unrelated generated artifacts.
 5. Confirm provider boundaries and intended autonomy settings remain explicit.
 6. Confirm GitHub issues, pull requests, and release notes are traceable.
-7. Summarize release readiness and any blockers.
+7. If `docs/compliance/eu-ai-act/` exists, run `python scripts/check_eu_ai_act.py --root .`; no AI project may release without a documented classification, and `BLOCKED` or `LEGAL_REVIEW_REQUIRED` stops release.
+8. Summarize release readiness and any blockers.
 
 Do not commit, tag, or push unless explicitly asked.

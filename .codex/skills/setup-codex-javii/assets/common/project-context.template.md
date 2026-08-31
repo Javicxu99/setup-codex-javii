@@ -44,6 +44,12 @@ Describe how this project is built, released and operated.
 
 List known risks, weak assumptions and missing validations.
 
+## AI Governance
+
+Record the current classification and evidence link in `docs/compliance/eu-ai-act/intake.json`.
+Use the minimal `NOT_APPLICABLE` route when there is no AI; run the complete conditional gate for
+AI projects with `python scripts/check_eu_ai_act.py --root .` before release.
+
 ## Current Status
 
 Describe what works today and what is pending.

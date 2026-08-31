@@ -32,6 +32,10 @@ Review this project before publishing a version. Run each step and report the re
 
 7. **README** - confirm the "What It Generates" section matches actual bootstrap output.
 
+8. **EU AI Act gate** - when `docs/compliance/eu-ai-act/` exists, run
+   `python scripts/check_eu_ai_act.py --root .`. A documented classification is mandatory for an
+   AI project; `BLOCKED` or `LEGAL_REVIEW_REQUIRED` stops release.
+
 ## Output
 
 Report: pass/fail per step, any blockers, release readiness summary.

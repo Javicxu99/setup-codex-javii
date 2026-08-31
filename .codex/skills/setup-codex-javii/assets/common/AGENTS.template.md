@@ -16,6 +16,7 @@ Help implement, validate, and document changes in a clear, incremental, reviewab
 - `docs/architecture.md`: technical structure.
 - `docs/codebase-memory.md`: graph-based code orientation and setup.
 - `docs/task-log.md`: changes, decisions, and validations.
+- `docs/compliance/eu-ai-act/`: dated AI applicability, controls, and release evidence.
 
 ## Rules
 
@@ -26,6 +27,7 @@ Help implement, validate, and document changes in a clear, incremental, reviewab
 - Do not overwrite existing work without understanding it.
 - Treat this repository as trusted: the generated Codex profile has full local autonomy and no approval prompts.
 - Record important decisions in `docs/task-log.md`.
+- Before release, complete the EU AI Act intake and run `python scripts/check_eu_ai_act.py --root .`; never treat the result as legal advice or certification.
 
 ## Validation
 

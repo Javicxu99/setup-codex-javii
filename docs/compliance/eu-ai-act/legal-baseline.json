@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "jurisdiction": "European Union",
+  "as_of": "2026-08-31",
+  "next_review_on": "2026-11-29",
+  "notice": "Governance baseline only; it is not legal advice, certification, or proof of compliance.",
+  "primary_law": {
+    "title": "Regulation (EU) 2024/1689, consolidated on 2026-07-27",
+    "amendment": "Regulation (EU) 2026/1744",
+    "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX%3A02024R1689-20260727"
+  },
+  "sources": [
+    {
+      "title": "Article 50 transparency guidelines",
+      "publisher": "European Commission",
+      "url": "https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems"
+    },
+    {
+      "title": "Article 50 transparency FAQ",
+      "publisher": "European Commission",
+      "url": "https://digital-strategy.ec.europa.eu/en/faqs/transparency-obligations-under-article-50-ai-act"
+    },
+    {
+      "title": "AI literacy questions and answers",
+      "publisher": "European Commission",
+      "url": "https://digital-strategy.ec.europa.eu/en/faqs/ai-literacy-questions-answers"
+    },
+    {
+      "title": "EU AI Act implementation timeline",
+      "publisher": "European Commission AI Act Service Desk",
+      "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/eu-ai-act-implementation-timeline"
+    },
+    {
+      "title": "High-risk classification principles",
+      "publisher": "European Commission AI Act Service Desk",
+      "url": "https://ai-act-service-desk.ec.europa.eu/en/general-principles-classification-high-risk-ai-systems"
+    },
+    {
+      "title": "Code of Practice on Transparency of AI-generated Content",
+      "publisher": "European Commission",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content"
+    },
+    {
+      "title": "Spanish Organic Law bill for AI governance, initiative 121/000096",
+      "publisher": "Congreso de los Diputados",
+      "url": "https://www.congreso.es/es/proyectos-de-ley?_iniciativas_id=121%2F000096&_iniciativas_legislatura=XV&_iniciativas_mode=mostrarDetalle&p_p_id=iniciativas&p_p_lifecycle=0&p_p_mode=view&p_p_state=normal"
+    }
+  ],
+  "milestones": [
+    {
+      "effective_on": "2025-02-02",
+      "summary": "Original prohibited practices and AI literacy measures apply.",
+      "refresh_required": false
+    },
+    {
+      "effective_on": "2025-08-02",
+      "summary": "Obligations for providers of general-purpose AI models apply.",
+      "refresh_required": false
+    },
+    {
+      "effective_on": "2026-08-02",
+      "summary": "Article 50 transparency obligations apply.",
+      "refresh_required": false
+    },
+    {
+      "effective_on": "2026-12-02",
+      "summary": "New intimate-content and child-sexual-abuse-content prohibitions apply; the limited Article 50(2) transition ends.",
+      "refresh_required": true
+    },
+    {
+      "effective_on": "2027-12-02",
+      "summary": "Technical obligations for Annex III high-risk AI systems apply.",
+      "refresh_required": true
+    },
+    {
+      "effective_on": "2028-08-02",
+      "summary": "Technical obligations for Annex I regulated-product high-risk AI systems apply.",
+      "refresh_required": true
+    }
+  ],
+  "national_developments": [
+    {
+      "country": "Spain",
+      "as_of": "2026-08-31",
+      "status": "Bill in parliamentary amendment stage; amendment deadline extended to 2026-09-02. Not enacted law.",
+      "initiative": "121/000096"
+    }
+  ]
+}

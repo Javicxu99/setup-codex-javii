@@ -47,6 +47,7 @@ The default installation includes every component. `--components` can select any
 | `claude` | `CLAUDE.md`, `.claude/settings.json`, Claude-only agents, hooks, output style, and skills |
 | `docs` | Project context, architecture, task log, graph guidance, and curated session notes |
 | `github` | Pull request and issue templates only |
+| `compliance` | Dated EU AI Act baseline, conditional intake/evidence, deterministic checker, and manual provider skills |
 | `shared` | `CHANGELOG.md`, managed `.gitignore` entries, and additive `.mcp.json` registration |
 
 Provider boundaries are strict: OpenAI models and Codex configuration never enter `.claude/`,
@@ -105,6 +106,47 @@ Behavior is deterministic:
 `-NoCodebaseMemory` and its legacy alias `-NoCodeGraph` suppress only the launcher's optional
 post-install availability check. Use `--components` when you want to omit generated scopes.
 
+## EU AI Act governance
+
+The default bootstrap includes a lightweight governance component dated `2026-08-31`. It uses
+JSON for the machine-read legal baseline and intake, Markdown for human evidence, and only the
+Python 3.11 standard library. It does not call a model, use an API key, or contact a legal service.
+It is a preparation and evidence tool, not legal advice, certification, conformity assessment,
+CE marking, or a promise of compliance.
+
+### Quick route for a project without AI
+
+1. Set `assessment.ai_system` to `no` in `docs/compliance/eu-ai-act/intake.json`.
+2. Record the real purpose, owner, date, and `NOT_APPLICABLE` decision.
+3. Run `python scripts/check_eu_ai_act.py --root .` and retain its `PASS` result for release.
+
+### Conditional route for a project with AI
+
+1. Record EU scope, intended purpose/context, operator role, prohibited-practice signals,
+   transparency triggers, possible high risk/GPAI status, and critical unknowns in `intake.json`.
+2. Complete only the applicable sections of `controls.md` and `release-evidence.md`.
+3. Run the checker. Its classifications are `NOT_APPLICABLE`, `BASELINE`,
+   `TRANSPARENCY_REQUIRED`, `HIGH_RISK_REVIEW`, `PROHIBITED_BLOCKED`, and `UNKNOWN_BLOCKED`.
+4. Stop release on `BLOCKED` or `LEGAL_REVIEW_REQUIRED`. Resolve and document `WARNING` results.
+5. Activate `high-risk/README.md` only for possible high-risk systems and obtain qualified
+   human/legal review.
+
+The checker uses exit codes `0` PASS, `1` WARNING, `2` LEGAL_REVIEW_REQUIRED, and `3` BLOCKED.
+Source code produced with a coding assistant is outside Article 50's marking obligation according
+to the Commission FAQ; that does not exempt other output types or uses. The baseline warns after
+90 days and when a recorded future legal milestone is reached without a refresh.
+
+Use `.codex/prompts/eu-ai-act-intake.md`, the `eu-ai-act-governance` Codex/Claude skill, and
+[`docs/compliance/eu-ai-act/README.md`](docs/compliance/eu-ai-act/README.md) for the manual flow.
+
+### Migration from 3.0.0
+
+Version 3.1.0 is additive. A default apply creates the new `compliance` files with backup-safe
+behavior. The generated intake starts as `UNKNOWN_BLOCKED` so a release cannot silently assume
+facts. Project-owned intake, controls, release evidence, and high-risk records are create-only and
+remain untouched on later bootstrap runs. Existing automation remains unchanged; explicitly omit
+`compliance` with `--components` when a target does not want the governance files.
+
 ## Manual project health audit
 
 The previous scheduled GitHub Actions audit has been removed. It required
@@ -139,15 +181,17 @@ Direct file search remains the documented fallback.
 From this repository:
 
 ```powershell
-python -m py_compile scripts\setup_codex_javii.py
+python -m py_compile scripts\setup_codex_javii.py scripts\check_eu_ai_act.py
 python -m unittest discover -s tests -v
+python scripts\check_eu_ai_act.py --root . --as-of-date 2026-08-31
 git diff --check
 git status --short --branch
 ```
 
 The standard-library test suite covers preview immutability, explicit apply, atomic backup-safe
 updates, idempotent repeats, conflict preservation, component selection, invalid MCP preflight,
-provider boundaries, hook execution, and the removal of the scheduled workflow.
+provider boundaries, hook execution, the retired scheduled workflow, eight required legal
+scenarios, and baseline/milestone freshness.
 
 ## Current documentation basis
 
@@ -157,7 +201,9 @@ Behavior was reviewed on 2026-08-31 against primary documentation:
 - [Codex AGENTS.md discovery](https://learn.chatgpt.com/docs/agent-configuration/agents-md) and [Codex hooks](https://learn.chatgpt.com/docs/hooks).
 - [Claude Code model configuration](https://code.claude.com/docs/en/model-config), [settings](https://code.claude.com/docs/en/settings), and [permission modes](https://code.claude.com/docs/en/permission-modes).
 - [Python version status](https://devguide.python.org/versions/) for the Python 3.11 minimum.
+- [Consolidated Regulation (EU) 2024/1689](https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX%3A02024R1689-20260727), [Article 50 guidance and FAQ](https://digital-strategy.ec.europa.eu/en/faqs/transparency-obligations-under-article-50-ai-act), [AI literacy Q&A](https://digital-strategy.ec.europa.eu/en/faqs/ai-literacy-questions-answers), and the [official implementation timeline](https://ai-act-service-desk.ec.europa.eu/en/ai-act/eu-ai-act-implementation-timeline).
 
 The existing candidate assessment remains in
-[`docs/notion-candidate-audit.md`](docs/notion-candidate-audit.md); this release does not import
-any new repository or Notion content.
+[`docs/notion-candidate-audit.md`](docs/notion-candidate-audit.md). The later “Legislacion de IA”
+row is recorded there as a secondary discovery lead; no Notion content or external runtime is
+imported.

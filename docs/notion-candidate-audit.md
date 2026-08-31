@@ -1,6 +1,6 @@
 # Notion Candidate Audit
 
-Audit date: 2026-07-15; deep review refreshed 2026-07-16. Source: Notion database `Links Proyectos Encontrados` (`36de283a-e1ef-80a1-afbf-f21331e9af0e`).
+Audit date: 2026-07-15; deep review refreshed 2026-07-16; later legal reference reviewed 2026-08-31. Source: Notion database `Links Proyectos Encontrados` (`36de283a-e1ef-80a1-afbf-f21331e9af0e`).
 
 ## Coverage and method
 
@@ -10,6 +10,7 @@ Audit date: 2026-07-15; deep review refreshed 2026-07-16. Source: Notion databas
 - The page bodies contain only the default Background/Analysis/Recommendations/Implementation headings. Decisions therefore rely on row properties and the linked resources.
 - GitHub candidates were checked through the connected GitHub integration, including repository resolution, primary documentation, and licensing. Candidates with plausible bootstrap value received a second source-level pass over their skill layout, manifests, installation path, dependencies, permissions, and operational assumptions. No candidate source was copied wholesale.
 - A direct data-source query was repeated on 2026-07-16: it still returned exactly 31 non-archived rows with `has_more: false`; the archived partition still contained 0 rows.
+- A later row named `Legislacion de IA` was created on 2026-08-04 at 00:18 Europe/Madrid, after the original audit snapshot. This update records the supplied row metadata and linked page without writing to Notion.
 
 Decision meanings: **integrate** = part of the base; **adapt partially** = a narrow idea or component is retained; **reference** = useful for a project-specific choice; **discard** = outside the universal bootstrap.
 
@@ -49,6 +50,15 @@ Decision meanings: **integrate** = part of the base; **adapt partially** = a nar
 | 30 | [AI Job Search](https://github.com/MadsLorentzen/ai-job-search) | Structured job-search, CV, cover-letter, and interview workflow. | Personal/domain-specific, with Bun, Python, LaTeX, and optional PDF dependencies. | **Discard** from the universal base. |
 | 31 | [LiteRT.js](https://github.com/google-ai-edge/LiteRT/tree/main/litert/js) | Browser/on-device ML inference via WebGPU/WASM. | Application-specific runtime with build/model constraints; unrelated to Codex bootstrap behavior. | **Reference** for client-side ML projects. |
 
+## Later candidate: Legislacion de IA
+
+- Notion row: `Legislacion de IA`, created 2026-08-04 00:18 Europe/Madrid in `Links Proyectos Encontrados`.
+- Linked page: [Rossellimac, “¿Qué tiene que hacer tu empresa el 2 de agosto de 2026 con la Ley de IA?”](https://rossellimac.es/blogs/blog/ley-ia-empresa-2-agosto-2026).
+- Source status: useful secondary discovery lead dated 2026-07-29; it is not legal authority and no page text is copied into the bootstrap.
+- Official verification: consolidated [Regulation (EU) 2024/1689](https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX%3A02024R1689-20260727), Commission [Article 50 guidelines](https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems) and [FAQ](https://digital-strategy.ec.europa.eu/en/faqs/transparency-obligations-under-article-50-ai-act), [AI literacy Q&A](https://digital-strategy.ec.europa.eu/en/faqs/ai-literacy-questions-answers), [implementation timeline](https://ai-act-service-desk.ec.europa.eu/en/ai-act/eu-ai-act-implementation-timeline), [high-risk principles](https://ai-act-service-desk.ec.europa.eu/en/general-principles-classification-high-risk-ai-systems), transparency [Code of Practice](https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content), and Spanish parliamentary [initiative 121/000096](https://www.congreso.es/es/proyectos-de-ley?_iniciativas_id=121%2F000096&_iniciativas_legislatura=XV&_iniciativas_mode=mostrarDetalle&p_p_id=iniciativas&p_p_lifecycle=0&p_p_mode=view&p_p_state=normal).
+- Verified state on 2026-08-31: Article 50 applies; AI literacy measures remain proportionate and uncertified; high-risk technical dates are 2027/2028; the Spanish initiative remains a bill in amendments with its deadline extended to 2026-09-02.
+- Decision: **Adapt partially**. Incorporate a small, conditional, dated governance gate based on the official sources. Do not import the article, create automatic legal claims, add an external runtime, or encode the Spanish bill as enacted law.
+
 ## Selected changes
 
 1. Keep the compact Karpathy and Ponytail adaptations; explicitly disable Caveman to avoid overlapping authorities.
@@ -60,6 +70,7 @@ Decision meanings: **integrate** = part of the base; **adapt partially** = a nar
 7. Keep the remaining specialist candidates discoverable here instead of expanding the runtime, credential, or maintenance surface.
 8. Adapt only the review categories from Agents Towards Production and no-mistakes into a read-only on-demand auditor; do not import either runtime.
 9. Add provider-native Codex and Claude auditor agents, pragmatic output, and separate SessionStart hooks that activate the shared Ponytail discipline without crossing provider configuration.
+10. Add the dependency-free `compliance` component and deterministic EU AI Act release gate, keeping high-risk evidence conditional and official sources authoritative.
 
 ## Maintenance and security conclusion
 

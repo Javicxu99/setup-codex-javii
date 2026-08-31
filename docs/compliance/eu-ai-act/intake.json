@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "assessment": {
+    "owner": "Javier",
+    "assessed_on": "2026-08-31",
+    "ai_system": "yes",
+    "eu_scope": "yes",
+    "intended_purpose": "Use third-party Codex and Claude Code assistants to develop and review a reusable repository bootstrap.",
+    "context": "Trusted personal software-development repository; no AI system is exposed to project end users.",
+    "role": "deployer",
+    "personal_non_professional": false,
+    "pre_market_research_only": false,
+    "real_world_testing": false
+  },
+  "risk_signals": {
+    "current_prohibited_practice": false,
+    "workplace_emotion_recognition": false,
+    "medical_or_safety_exception": false,
+    "nonconsensual_intimate_synthetic_content": false,
+    "child_sexual_abuse_material": false,
+    "high_risk_annex_i": false,
+    "high_risk_annex_iii": false,
+    "employment_cv_screening": false,
+    "gpai_model_provider": false
+  },
+  "transparency": {
+    "direct_interaction": false,
+    "interaction_is_obvious": false,
+    "first_interaction_notice": "not_applicable",
+    "generates_synthetic_content": false,
+    "provider_machine_readable_marking": "not_applicable",
+    "source_code_only": true,
+    "placed_on_market_before_2026_08_02": false,
+    "emotion_recognition": false,
+    "biometric_categorisation": false,
+    "people_notice": "not_applicable",
+    "deepfake": false,
+    "deepfake_label": "not_applicable",
+    "public_interest_text": false,
+    "substantive_human_review": true,
+    "editorial_responsibility": true,
+    "public_interest_text_label": "not_applicable"
+  },
+  "critical_unknowns": [],
+  "evidence": {
+    "controls": "docs/compliance/eu-ai-act/controls.md",
+    "release": "docs/compliance/eu-ai-act/release-evidence.md",
+    "ai_literacy": "docs/compliance/eu-ai-act/controls.md",
+    "third_party": "docs/compliance/eu-ai-act/controls.md",
+    "transparency": "",
+    "high_risk": "",
+    "legal_review": ""
+  },
+  "decision": {
+    "declared_status": "BASELINE",
+    "rationale": "The repository uses third-party coding assistants but does not provide a model or expose an AI system to end users; prohibited, transparency-specific, and high-risk signals are false.",
+    "reviewed_on": "2026-08-31",
+    "approved_by": "Javier"
+  }
+}

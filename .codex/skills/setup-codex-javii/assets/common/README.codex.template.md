@@ -9,6 +9,7 @@ This project was initialized with the `{{PROFILE}}` profile on {{DATE}}.
 3. Prefer the `codebase-memory-mcp` graph for symbols and impact; fall back to `rg` and direct reads when unavailable.
 4. Keep changes small and record durable decisions in `docs/task-log.md`.
 5. Run relevant validation before declaring completion.
+6. Complete `docs/compliance/eu-ai-act/intake.json` and run `python scripts/check_eu_ai_act.py --root .` before release.
 
 Ponytail Lite is injected at each new Codex session. The project includes an on-demand,
 read-only `project-health-auditor` definition and matching manual prompt.
@@ -22,6 +23,7 @@ read-only `project-health-auditor` definition and matching manual prompt.
 - `ponytail`
 - `audit-web-quality`
 - `review-skill-security`
+- `eu-ai-act-governance`
 
 ## Graph setup
 
@@ -32,3 +34,9 @@ Install `codebase-memory-mcp` from https://github.com/DeusData/codebase-memory-m
 Open this repository in Codex Desktop while signed in with ChatGPT, then ask Codex to run
 `.codex/prompts/project-health-audit.md`. The audit uses the active Codex session, requires no
 API key, and remains read-only. No scheduled GitHub workflow is generated.
+
+## EU AI Act governance
+
+Use `docs/compliance/eu-ai-act/README.md` for the minimal no-AI route or the conditional AI route.
+The checker is deterministic, dependency-free, and local. It supports governance and escalation;
+it is not legal advice, certification, conformity assessment, or a guarantee of compliance.

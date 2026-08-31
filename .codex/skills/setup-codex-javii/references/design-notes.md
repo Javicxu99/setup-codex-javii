@@ -16,6 +16,8 @@
   the bootstrap's preview and backup controls rather than agent approval prompts.
 - Run project health audits manually from Codex Desktop with the signed-in ChatGPT session.
 - Keep the active bootstrap universal: specialist skills may be present when they are dormant until relevant and add no required toolchain.
+- Keep EU AI Act governance conditional: JSON for deterministic inputs, Markdown for human evidence,
+  official dated sources, fail-closed unknowns, and high-risk templates inactive until classified.
 
 ## Non-Goals
 
@@ -25,3 +27,5 @@
 - Do not create a plugin framework.
 - Do not assume a single architecture for every project.
 - Do not install domain-specific toolchains or generate framework scaffolding before a project needs them.
+- Do not present governance checks as legal advice, certification, automatic compliance, conformity
+  assessment, or a replacement for privacy and sector-specific law.

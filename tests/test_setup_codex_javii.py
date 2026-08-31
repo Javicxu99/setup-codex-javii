@@ -66,6 +66,13 @@ class BootstrapTests(unittest.TestCase):
             ".claude/agents/project-health-auditor.md",
             ".claude/hooks/session_start_ponytail.py",
             ".claude/output-styles/pragmatic.md",
+            ".codex/prompts/eu-ai-act-intake.md",
+            ".codex/skills/eu-ai-act-governance/SKILL.md",
+            ".claude/skills/eu-ai-act-governance/SKILL.md",
+            "scripts/check_eu_ai_act.py",
+            "docs/compliance/eu-ai-act/legal-baseline.json",
+            "docs/compliance/eu-ai-act/intake.json",
+            "docs/compliance/eu-ai-act/high-risk/README.md",
             "docs/claude-session-notes.md",
             ".github/PULL_REQUEST_TEMPLATE.md",
         ):
@@ -73,6 +80,22 @@ class BootstrapTests(unittest.TestCase):
 
         self.assertFalse((target / ".github/workflows/daily-project-health.yml").exists())
         self.assertFalse((target / ".github/codex/prompts/daily-project-health.md").exists())
+
+        installed_gate = subprocess.run(
+            [
+                sys.executable,
+                str(target / "scripts/check_eu_ai_act.py"),
+                "--root",
+                str(target),
+                "--as-of-date",
+                "2026-08-31",
+            ],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(installed_gate.returncode, 3)
+        self.assertIn("CLASSIFICATION: UNKNOWN_BLOCKED", installed_gate.stdout)
 
         codex_config = tomllib.loads(
             (target / ".codex/config.toml").read_text(encoding="utf-8")
@@ -124,8 +147,28 @@ class BootstrapTests(unittest.TestCase):
         self.assertEqual(second.created, [])
         self.assertEqual(second.updated, [])
         self.assertEqual(second.backups, [])
-        self.assertGreater(len(second.unchanged), 20)
+        self.assertGreater(len(second.unchanged), 30)
         self.assertFalse((target / "AGENTS.md.bak.1").exists())
+
+    def test_compliance_evidence_is_create_only(self) -> None:
+        module = load_bootstrap_module()
+        temporary_directory, target = create_target()
+        self.addCleanup(temporary_directory.cleanup)
+
+        module.bootstrap(
+            "default", target=target, apply=True, components=("compliance",)
+        )
+        intake_path = target / "docs/compliance/eu-ai-act/intake.json"
+        custom = '{"project_owned": true}\n'
+        intake_path.write_text(custom, encoding="utf-8")
+
+        repeated = module.bootstrap(
+            "default", target=target, apply=True, components=("compliance",)
+        )
+
+        self.assertEqual(intake_path.read_text(encoding="utf-8"), custom)
+        self.assertIn(intake_path, repeated.preserved)
+        self.assertEqual(repeated.backups, [])
 
     def test_skip_policy_preserves_every_existing_conflict(self) -> None:
         module = load_bootstrap_module()
@@ -169,6 +212,25 @@ class BootstrapTests(unittest.TestCase):
         self.assertFalse((target / ".github").exists())
         self.assertFalse((target / ".mcp.json").exists())
         self.assertFalse((target / ".gitignore").exists())
+
+    def test_compliance_component_is_selectable(self) -> None:
+        module = load_bootstrap_module()
+        temporary_directory, target = create_target()
+        self.addCleanup(temporary_directory.cleanup)
+
+        module.bootstrap(
+            "default", target=target, apply=True, components=("compliance",)
+        )
+
+        self.assertTrue((target / "scripts/check_eu_ai_act.py").is_file())
+        self.assertTrue((target / "docs/compliance/eu-ai-act/intake.json").is_file())
+        self.assertTrue((target / ".codex/prompts/eu-ai-act-intake.md").is_file())
+        self.assertTrue(
+            (target / ".claude/skills/eu-ai-act-governance/SKILL.md").is_file()
+        )
+        self.assertFalse((target / "AGENTS.md").exists())
+        self.assertFalse((target / "CLAUDE.md").exists())
+        self.assertFalse((target / ".mcp.json").exists())
 
     def test_cli_defaults_to_preview_then_applies_explicitly(self) -> None:
         temporary_directory, target = create_target()
@@ -246,6 +308,18 @@ class BootstrapTests(unittest.TestCase):
             (
                 ".claude/agents/project-health-auditor.md",
                 ".claude/bootstrap-assets/agents/project-health-auditor.md",
+            ),
+            (
+                ".codex/prompts/eu-ai-act-intake.md",
+                ".codex/skills/setup-codex-javii/assets/prompts/eu-ai-act-intake.md",
+            ),
+            (
+                ".codex/skills/eu-ai-act-governance/SKILL.md",
+                ".codex/skills/setup-codex-javii/assets/skills/eu-ai-act-governance/SKILL.md",
+            ),
+            (
+                ".claude/skills/eu-ai-act-governance/SKILL.md",
+                ".claude/bootstrap-assets/skills/eu-ai-act-governance/SKILL.md",
             ),
         )
         for live_path, asset_path in pairs:

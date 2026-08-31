@@ -1,5 +1,15 @@
 # Task Log
 
+## 2026-08-31 - EU AI Act governance baseline 3.1
+
+- Added the default/selectable `compliance` component, dated official source baseline,
+  deterministic checker, conditional evidence, and manual Codex/Claude workflows.
+- Kept the no-AI route minimal, source-code marking exception explicit, high-risk evidence
+  inactive by default, critical unknowns fail-closed, and legal review outside automation.
+- Added eight required scenarios plus milestone freshness and retained all bootstrap safety tests.
+- Preserved provider separation, full trusted-repository autonomy, zero OpenAI API usage, and zero
+  new runtime dependencies.
+
 ## 2026-08-31 - Safe bootstrap v3
 
 - Replaced the API-key-backed scheduled audit with a manual, read-only Codex Desktop prompt.

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "assessment": {
+    "owner": "UNSET",
+    "assessed_on": "{{DATE}}",
+    "ai_system": "unknown",
+    "eu_scope": "unknown",
+    "intended_purpose": "UNSET",
+    "context": "UNSET",
+    "role": "unknown",
+    "personal_non_professional": false,
+    "pre_market_research_only": false,
+    "real_world_testing": false
+  },
+  "risk_signals": {
+    "current_prohibited_practice": null,
+    "workplace_emotion_recognition": null,
+    "medical_or_safety_exception": null,
+    "nonconsensual_intimate_synthetic_content": null,
+    "child_sexual_abuse_material": null,
+    "high_risk_annex_i": null,
+    "high_risk_annex_iii": null,
+    "employment_cv_screening": null,
+    "gpai_model_provider": null
+  },
+  "transparency": {
+    "direct_interaction": null,
+    "interaction_is_obvious": null,
+    "first_interaction_notice": "unknown",
+    "generates_synthetic_content": null,
+    "provider_machine_readable_marking": "unknown",
+    "source_code_only": null,
+    "placed_on_market_before_2026_08_02": null,
+    "emotion_recognition": null,
+    "biometric_categorisation": null,
+    "people_notice": "unknown",
+    "deepfake": null,
+    "deepfake_label": "unknown",
+    "public_interest_text": null,
+    "substantive_human_review": null,
+    "editorial_responsibility": null,
+    "public_interest_text_label": "unknown"
+  },
+  "critical_unknowns": [
+    "Complete the intake before release"
+  ],
+  "evidence": {
+    "controls": "docs/compliance/eu-ai-act/controls.md",
+    "release": "docs/compliance/eu-ai-act/release-evidence.md",
+    "ai_literacy": "docs/compliance/eu-ai-act/controls.md",
+    "third_party": "docs/compliance/eu-ai-act/controls.md",
+    "transparency": "",
+    "high_risk": "",
+    "legal_review": ""
+  },
+  "decision": {
+    "declared_status": "UNKNOWN_BLOCKED",
+    "rationale": "UNSET",
+    "reviewed_on": "{{DATE}}",
+    "approved_by": "UNSET"
+  }
+}

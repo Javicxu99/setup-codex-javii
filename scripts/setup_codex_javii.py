@@ -18,7 +18,7 @@ from typing import Iterable
 MIN_PYTHON = (3, 11)
 ROOT_MARKERS = (".git", "pyproject.toml", "package.json", "Cargo.toml", "go.mod")
 PROFILES = ("default",)
-COMPONENTS = ("codex", "claude", "docs", "github", "shared")
+COMPONENTS = ("codex", "claude", "docs", "github", "compliance", "shared")
 CONFLICT_POLICIES = ("backup", "skip")
 LEGACY_SCHEDULED_AUDIT = Path(".github/workflows/daily-project-health.yml")
 MANAGED_GITIGNORE_BLOCK = """# setup-codex-javii managed local state
@@ -50,6 +50,7 @@ class ManagedFile:
     component: str
     source: Path
     destination: Path
+    create_only: bool = False
 
 
 def parse_args() -> argparse.Namespace:
@@ -320,6 +321,8 @@ def build_file_map(source_root: Path, target_root: Path) -> list[ManagedFile]:
     assets = bootstrap_skill_root / "assets"
     claude_assets = source_root / ".claude" / "bootstrap-assets"
     common = assets / "common"
+    compliance_assets = assets / "compliance"
+    compliance_docs = source_root / "docs" / "compliance" / "eu-ai-act"
 
     entries = [
         ManagedFile("codex", common / "AGENTS.template.md", target_root / "AGENTS.md"),
@@ -476,6 +479,64 @@ def build_file_map(source_root: Path, target_root: Path) -> list[ManagedFile]:
             ),
         ]
     )
+    entries.extend(
+        [
+            ManagedFile(
+                "compliance",
+                source_root / "scripts/check_eu_ai_act.py",
+                target_root / "scripts/check_eu_ai_act.py",
+            ),
+            ManagedFile(
+                "compliance",
+                compliance_docs / "README.md",
+                target_root / "docs/compliance/eu-ai-act/README.md",
+            ),
+            ManagedFile(
+                "compliance",
+                compliance_docs / "legal-baseline.json",
+                target_root / "docs/compliance/eu-ai-act/legal-baseline.json",
+            ),
+            ManagedFile(
+                "compliance",
+                compliance_assets / "intake.template.json",
+                target_root / "docs/compliance/eu-ai-act/intake.json",
+                create_only=True,
+            ),
+            ManagedFile(
+                "compliance",
+                compliance_assets / "controls.template.md",
+                target_root / "docs/compliance/eu-ai-act/controls.md",
+                create_only=True,
+            ),
+            ManagedFile(
+                "compliance",
+                compliance_assets / "release-evidence.template.md",
+                target_root / "docs/compliance/eu-ai-act/release-evidence.md",
+                create_only=True,
+            ),
+            ManagedFile(
+                "compliance",
+                compliance_assets / "high-risk.template.md",
+                target_root / "docs/compliance/eu-ai-act/high-risk/README.md",
+                create_only=True,
+            ),
+            ManagedFile(
+                "compliance",
+                assets / "prompts/eu-ai-act-intake.md",
+                target_root / ".codex/prompts/eu-ai-act-intake.md",
+            ),
+            ManagedFile(
+                "compliance",
+                assets / "skills/eu-ai-act-governance/SKILL.md",
+                target_root / ".codex/skills/eu-ai-act-governance/SKILL.md",
+            ),
+            ManagedFile(
+                "compliance",
+                claude_assets / "skills/eu-ai-act-governance/SKILL.md",
+                target_root / ".claude/skills/eu-ai-act-governance/SKILL.md",
+            ),
+        ]
+    )
     return entries
 
 
@@ -532,6 +593,9 @@ def bootstrap(
 
     for entry in file_map:
         if entry.component in selected_components:
+            if entry.create_only and entry.destination.exists():
+                report.preserved.append(entry.destination)
+                continue
             write_rendered_file(
                 entry.source,
                 entry.destination,
@@ -601,6 +665,11 @@ def print_report(
         "  - In Codex Desktop, request the read-only audit from "
         ".codex/prompts/project-health-audit.md when needed."
     )
+    if "compliance" in components:
+        print(
+            "  - Complete docs/compliance/eu-ai-act/intake.json, then run "
+            "python scripts/check_eu_ai_act.py --root . before release."
+        )
     print("  - Install codebase-memory-mcp only if you want the optional graph workflow.")
 
 

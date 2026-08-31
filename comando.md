@@ -28,6 +28,8 @@ Selective installation and conflict preservation:
 python scripts\setup_codex_javii.py --target C:\path\to\project --components codex docs github --on-conflict skip --apply
 ```
 
+The available components are `codex`, `claude`, `docs`, `github`, `compliance`, and `shared`.
+
 `-NoCodebaseMemory` and `-NoCodeGraph` only skip the optional post-install command check.
 
 ## Manual health audit
@@ -40,6 +42,17 @@ Run the read-only audit in .codex/prompts/project-health-audit.md and report fin
 
 No OpenAI API key or GitHub Actions workflow is used.
 
+## EU AI Act governance
+
+```powershell
+python scripts\check_eu_ai_act.py --root .
+python scripts\check_eu_ai_act.py --root . --as-of-date 2026-08-31 --json
+```
+
+Exit codes: `0` PASS, `1` WARNING, `2` LEGAL_REVIEW_REQUIRED, `3` BLOCKED. Complete
+`docs/compliance/eu-ai-act/intake.json` first. This is governance evidence, not legal advice or
+certification.
+
 ## Codebase Memory
 
 Install from https://github.com/DeusData/codebase-memory-mcp only when wanted, restart Codex,
@@ -49,8 +62,9 @@ then use `index_repository`, `get_architecture`, `search_graph`, `trace_path`, a
 ## Validation
 
 ```powershell
-python -m py_compile scripts\setup_codex_javii.py
+python -m py_compile scripts\setup_codex_javii.py scripts\check_eu_ai_act.py
 python -m unittest discover -s tests -v
+python scripts\check_eu_ai_act.py --root . --as-of-date 2026-08-31
 git diff --check
 git status --short --branch
 ```
@@ -59,7 +73,7 @@ git status --short --branch
 
 ```powershell
 git add .
-git commit -m "Release 3.0.0 safe bootstrap workflow"
+git commit -m "Release 3.1.0 EU AI Act governance baseline"
 git push -u origin HEAD
 ```
 

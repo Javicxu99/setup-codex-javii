@@ -1,50 +1,53 @@
 ---
 name: setup-codex-javii
-description: Initialize the OpenAI Codex side of Javii's universal project setup. Use when the user wants Codex agent configuration, hooks, prompts, context docs, reusable local skills, codebase-memory-mcp, and daily health automation before starting implementation.
+description: Preview and initialize Javii's provider-separated Codex and Claude Code project setup, including local instructions, prompts, skills, context docs, optional codebase-memory-mcp registration, and manual health auditing without API credentials.
 ---
 
 # setup-codex-javii
 
-Use this skill to initialize a repository with a clean, compact, and maintainable Codex structure.
+Use this skill to initialize a trusted repository with a compact, reusable Codex and Claude Code
+structure. Python 3.11 or newer is required; no dependency or secret is installed.
 
 ## Procedure
 
-1. Detect the target repository root by looking for `.git`, `pyproject.toml`, `package.json`, `Cargo.toml`, or `go.mod`.
-2. Run the default bootstrap from the target project root:
+1. Detect the target root from `.git`, `pyproject.toml`, `package.json`, `Cargo.toml`, or `go.mod`.
+2. Preview the complete plan from the target project:
 
 ```bash
-python path/to/setup-codex-javii/scripts/setup_codex_javii.py --profile default
+python path/to/setup-codex-javii/scripts/setup_codex_javii.py --target .
 ```
 
-3. Create or update:
-   - `AGENTS.md`
-   - `CHANGELOG.md`
-   - `.codex/config.toml`
-   - `.codex/agents/` and `.codex/hooks.json`
-   - `.codex/prompts/`
-   - `.codex/skills/`
-   - `.github/`
-   - managed `.gitignore` entries for local Codex and codebase-memory state
-   - `docs/`
-4. Enable official Codex history persistence with `history.persistence = "save-all"`.
-5. Create `docs/codex-session-notes.md` for reviewed summaries of important Codex conversations.
-6. Configure `codebase-memory-mcp` and create its docs, prompt, and orientation skill.
-7. Copy local skills:
-   - `project-orientation`
-   - `codebase-memory`
-   - `update-project-context`
-   - `karpathy-guidelines`
-8. Add the read-only daily auditor, Ponytail SessionStart hook, and portable scheduled GitHub audit.
-9. Create `.bak` backups before overwriting any existing file.
-10. Review the final report of created files, files updated with backup, backups, and next steps.
+3. Review files to create, files to back up and update, unchanged files, preserved files, and warnings.
+4. Select a subset when needed with `--components codex claude docs github shared`.
+5. Use `--on-conflict skip` when every existing destination must remain untouched.
+6. Apply only after the preview is acceptable:
+
+```bash
+python path/to/setup-codex-javii/scripts/setup_codex_javii.py --target . --apply
+```
+
+7. Review `AGENTS.md`, `CLAUDE.md`, and `docs/project-context.md` before committing.
+8. Run project validation and inspect the resulting diff.
+
+## Generated behavior
+
+- Codex and Claude configuration remain in their own provider directories.
+- Full autonomous execution remains enabled for both providers and is intended only for trusted repositories.
+- Changed files receive numbered `.bak` copies before atomic replacement.
+- Identical content is not rewritten and does not create another backup.
+- A full read-only preflight runs before any `--apply` mutation.
+- `.mcp.json` is merged additively and never installs the optional server.
+- GitHub issue and pull request templates are generated without an AI workflow.
+- `.codex/prompts/project-health-audit.md` provides an on-demand, read-only audit for Codex Desktop.
+- No `OPENAI_API_KEY`, API call, or external scheduled automation is required.
 
 ## Rules
 
-- Do not install dependencies.
-- Do not schedule the daily GitHub audit until the target has an `OPENAI_API_KEY` Actions secret.
+- Do not install dependencies, binaries, plugins, or secrets.
+- Do not delete legacy target-project files automatically. Warn when the obsolete scheduled audit remains.
 - Do not commit unless explicitly asked.
-- Keep `AGENTS.md` brief; long context belongs in `docs/`.
-- Store curated conversation summaries in `docs/codex-session-notes.md`, not raw transcripts.
-- Do not install binaries automatically; document installation and let the user or environment provide `codebase-memory-mcp`.
-- Keep the setup universal; domain-specific project context belongs in the generated `docs/`.
-- Keep GitHub traceability lightweight with changelog entries, issues, PRs, and version tags.
+- Keep `AGENTS.md` and `CLAUDE.md` brief; long context belongs in `docs/`.
+- Store curated conversation summaries, not raw transcripts.
+- Keep the setup universal; domain-specific context belongs in the generated project docs.
+- Treat codebase-memory-mcp as optional and preserve direct file search as the fallback.
+- Keep GitHub traceability lightweight with changelog entries, issues, pull requests, and version tags.

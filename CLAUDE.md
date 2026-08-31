@@ -5,10 +5,12 @@ Run `iniciar-setup.ps1` (or the Python script directly) to bootstrap a target pr
 
 Read `docs/project-context.md` (if it exists) for full context before important tasks.
 
+This profile uses `bypassPermissions` and is intended only for this trusted repository.
+
 ## Project Structure
 
 - `.claude/settings.json` - Claude Code configuration (`claude-fable-5`, high, Pragmatic, bypassPermissions)
-- `.claude/agents/` - Claude-specific read-only project auditor
+- `.claude/agents/` - Claude-specific on-demand read-only project auditor
 - `.claude/hooks/` - Claude SessionStart hooks
 - `.claude/output-styles/` - concise Pragmatic output style
 - `.claude/skills/` - Claude Code skills (karpathy, caveman, codebase-memory, ponytail, audit-web-quality, review-skill-security, archive, release-check)

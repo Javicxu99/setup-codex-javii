@@ -8,6 +8,42 @@ This project follows semantic versioning for Git tags and GitHub releases.
 
 - No unreleased changes.
 
+## [3.0.0] - 2026-08-31
+
+### Added
+
+- Read-only preview as the default CLI behavior, explicit `--apply`, target selection, component
+  selection, and `backup` or `skip` conflict policies.
+- Full preflight before every apply, atomic per-file replacement, unchanged-file detection, and
+  clear reporting for created, updated, unchanged, preserved, and legacy files.
+- Manual Codex Desktop project-health prompt and on-demand provider-specific auditor definitions.
+- Python launcher diagnostics that reject incompatible or non-runnable interpreters clearly.
+- End-to-end regression coverage for preview immutability, idempotency, selective installs,
+  conflict preservation, invalid MCP preflight, provider boundaries, and retired automation.
+
+### Changed
+
+- Python 3.11 is now the minimum supported version; Python 3.10 reaches end of support in October 2026.
+- Existing files are backed up only when their rendered content will actually change.
+- The Windows launcher previews every plan before applying it and accepts Spanish or English
+  confirmation; `-Apply` skips the question but not the preview.
+- Hook commands resolve from the Git root so Codex sessions started in subdirectories remain valid.
+- Release guidance now uses a branch and pull request before tagging merged `main`.
+- Full trusted-repository autonomy remains intentional for both Codex and Claude Code.
+
+### Removed
+
+- The scheduled GitHub Actions project-health workflow and its duplicate bootstrap assets.
+- The `OPENAI_API_KEY` requirement. Manual audits use the signed-in Codex Desktop/ChatGPT session
+  and no external automation attempts to reuse that session.
+
+### Breaking
+
+- Running the Python entry point without `--apply` now previews instead of writing.
+- Python 3.10 and older are rejected.
+- Existing target projects are not modified destructively: legacy
+  `.github/workflows/daily-project-health.yml` files must be reviewed and removed manually.
+
 ## [2.4.0] - 2026-07-16
 
 ### Added

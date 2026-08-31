@@ -5,15 +5,22 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import sys
+import tempfile
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
+from typing import Iterable
 
 
+MIN_PYTHON = (3, 11)
 ROOT_MARKERS = (".git", "pyproject.toml", "package.json", "Cargo.toml", "go.mod")
 PROFILES = ("default",)
+COMPONENTS = ("codex", "claude", "docs", "github", "shared")
+CONFLICT_POLICIES = ("backup", "skip")
+LEGACY_SCHEDULED_AUDIT = Path(".github/workflows/daily-project-health.yml")
 MANAGED_GITIGNORE_BLOCK = """# setup-codex-javii managed local state
 .codex/sessions/
 .codex/history/
@@ -33,12 +40,24 @@ class Report:
     created: list[Path] = field(default_factory=list)
     updated: list[Path] = field(default_factory=list)
     backups: list[Path] = field(default_factory=list)
-    skipped: list[Path] = field(default_factory=list)
+    unchanged: list[Path] = field(default_factory=list)
+    preserved: list[Path] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class ManagedFile:
+    component: str
+    source: Path
+    destination: Path
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Initialize a target project with Javii's Codex setup."
+        description=(
+            "Preview or apply Javii's Codex and Claude Code project bootstrap. "
+            "Preview is the default."
+        )
     )
     parser.add_argument(
         "--profile",
@@ -46,17 +65,65 @@ def parse_args() -> argparse.Namespace:
         default="default",
         help="Bootstrap profile to apply.",
     )
+    parser.add_argument(
+        "--target",
+        type=Path,
+        default=Path.cwd(),
+        help="Directory used to detect the target project root (default: current directory).",
+    )
+    parser.add_argument(
+        "--components",
+        nargs="+",
+        choices=COMPONENTS,
+        default=COMPONENTS,
+        metavar="COMPONENT",
+        help="Components to include; defaults to all components.",
+    )
+    parser.add_argument(
+        "--on-conflict",
+        choices=CONFLICT_POLICIES,
+        default="backup",
+        help=(
+            "For a changed existing file, create a backup and overwrite it, "
+            "or preserve it with skip."
+        ),
+    )
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--apply",
+        action="store_true",
+        help="Apply the displayed plan. Existing changed files are backed up by default.",
+    )
+    mode.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Explicitly request preview mode (also the default).",
+    )
     return parser.parse_args()
 
 
+def require_supported_python() -> None:
+    if sys.version_info < MIN_PYTHON:
+        required = ".".join(str(part) for part in MIN_PYTHON)
+        current = ".".join(str(part) for part in sys.version_info[:3])
+        raise RuntimeError(
+            f"Python {required}+ is required; the active interpreter is Python {current}."
+        )
+
+
 def find_project_root(start: Path) -> Path:
+    if not start.exists():
+        raise RuntimeError(f"Target path does not exist: {start}")
+    if not start.is_dir():
+        raise RuntimeError(f"Target path is not a directory: {start}")
+
     current = start.resolve()
     for candidate in (current, *current.parents):
         if any((candidate / marker).exists() for marker in ROOT_MARKERS):
             return candidate
     raise RuntimeError(
-        "Could not detect a project root. Run inside a project with .git, "
-        "pyproject.toml, package.json, Cargo.toml, or go.mod."
+        "Could not detect a project root. Use --target with a directory inside a project "
+        "containing .git, pyproject.toml, package.json, Cargo.toml, or go.mod."
     )
 
 
@@ -91,103 +158,367 @@ def next_backup_path(path: Path) -> Path:
         index += 1
 
 
+def atomic_write_text(destination: Path, content: str) -> None:
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            newline="\n",
+            dir=destination.parent,
+            prefix=f".{destination.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as temporary:
+            temporary.write(content)
+            temporary_path = Path(temporary.name)
+        os.replace(temporary_path, destination)
+    finally:
+        if temporary_path is not None and temporary_path.exists():
+            temporary_path.unlink()
+
+
+def read_existing_text(path: Path) -> str:
+    try:
+        return path.read_text(encoding="utf-8-sig")
+    except (OSError, UnicodeError) as exc:
+        raise RuntimeError(f"Cannot safely compare existing text file {path}: {exc}") from exc
+
+
+def write_content(
+    destination: Path,
+    content: str,
+    report: Report,
+    *,
+    apply: bool,
+    on_conflict: str,
+) -> None:
+    if destination.exists():
+        if on_conflict == "skip":
+            report.preserved.append(destination)
+            return
+        if read_existing_text(destination) == content:
+            report.unchanged.append(destination)
+            return
+
+        report.updated.append(destination)
+        if not apply:
+            return
+
+        backup = next_backup_path(destination)
+        shutil.copy2(destination, backup)
+        report.backups.append(backup)
+        atomic_write_text(destination, content)
+        return
+
+    report.created.append(destination)
+    if apply:
+        atomic_write_text(destination, content)
+
+
 def write_rendered_file(
     source: Path,
     destination: Path,
     values: dict[str, str],
     report: Report,
+    *,
+    apply: bool,
+    on_conflict: str,
 ) -> None:
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    content = render_template(source, values)
-
-    if destination.exists():
-        backup = next_backup_path(destination)
-        shutil.copy2(destination, backup)
-        report.backups.append(backup)
-        report.updated.append(destination)
-    else:
-        report.created.append(destination)
-
-    destination.write_text(content, encoding="utf-8", newline="\n")
-
-
-def ensure_gitignore_entries(target_root: Path, report: Report) -> None:
-    destination = target_root / ".gitignore"
-    block = MANAGED_GITIGNORE_BLOCK
-
-    if not destination.exists():
-        destination.write_text(block, encoding="utf-8", newline="\n")
-        report.created.append(destination)
-        return
-
-    existing = destination.read_text(encoding="utf-8")
-    if block in existing:
-        report.skipped.append(destination)
-        return
-
-    backup = next_backup_path(destination)
-    shutil.copy2(destination, backup)
-    report.backups.append(backup)
-    report.updated.append(destination)
-
-    separator = "\n\n" if existing.strip() else ""
-    destination.write_text(
-        existing.rstrip() + separator + block,
-        encoding="utf-8",
-        newline="\n",
+    write_content(
+        destination,
+        render_template(source, values),
+        report,
+        apply=apply,
+        on_conflict=on_conflict,
     )
 
 
-def write_mcp_json(target_root: Path, report: Report) -> None:
+def ensure_gitignore_entries(
+    target_root: Path,
+    report: Report,
+    *,
+    apply: bool,
+    on_conflict: str,
+) -> None:
+    destination = target_root / ".gitignore"
+    if destination.exists() and on_conflict == "skip":
+        report.preserved.append(destination)
+        return
+
+    if not destination.exists():
+        content = MANAGED_GITIGNORE_BLOCK
+    else:
+        existing = read_existing_text(destination)
+        if MANAGED_GITIGNORE_BLOCK in existing:
+            report.unchanged.append(destination)
+            return
+        separator = "\n\n" if existing.strip() else ""
+        content = existing.rstrip() + separator + MANAGED_GITIGNORE_BLOCK
+
+    write_content(
+        destination,
+        content,
+        report,
+        apply=apply,
+        on_conflict=on_conflict,
+    )
+
+
+def write_mcp_json(
+    target_root: Path,
+    report: Report,
+    *,
+    apply: bool,
+    on_conflict: str,
+) -> None:
     destination = target_root / ".mcp.json"
     server = {"command": "codebase-memory-mcp"}
+
+    if destination.exists() and on_conflict == "skip":
+        report.preserved.append(destination)
+        return
+
     if not destination.exists():
         content = {"mcpServers": {"codebase-memory-mcp": server}}
-        destination.write_text(
-            json.dumps(content, indent=2) + "\n", encoding="utf-8", newline="\n"
-        )
-        report.created.append(destination)
-        return
+    else:
+        try:
+            content = json.loads(destination.read_text(encoding="utf-8-sig"))
+        except (json.JSONDecodeError, OSError, UnicodeError) as exc:
+            raise RuntimeError(f"Cannot safely update {destination}: {exc}") from exc
 
-    try:
-        content = json.loads(destination.read_text(encoding="utf-8-sig"))
-    except (json.JSONDecodeError, OSError) as exc:
-        raise RuntimeError(f"Cannot safely update {destination}: {exc}") from exc
+        servers = content.setdefault("mcpServers", {})
+        if not isinstance(servers, dict):
+            raise RuntimeError(
+                f"Cannot safely update {destination}: mcpServers is not an object"
+            )
+        if servers.get("codebase-memory-mcp") == server:
+            report.unchanged.append(destination)
+            return
+        servers["codebase-memory-mcp"] = server
 
-    servers = content.setdefault("mcpServers", {})
-    if not isinstance(servers, dict):
-        raise RuntimeError(f"Cannot safely update {destination}: mcpServers is not an object")
-    if servers.get("codebase-memory-mcp") == server:
-        report.skipped.append(destination)
-        return
-
-    backup = next_backup_path(destination)
-    shutil.copy2(destination, backup)
-    report.backups.append(backup)
-    report.updated.append(destination)
-    servers["codebase-memory-mcp"] = server
-    destination.write_text(
-        json.dumps(content, indent=2) + "\n", encoding="utf-8", newline="\n"
+    write_content(
+        destination,
+        json.dumps(content, indent=2) + "\n",
+        report,
+        apply=apply,
+        on_conflict=on_conflict,
     )
 
 
-def bootstrap(profile: str) -> Report:
-    script_path = Path(__file__).resolve()
-    source_root = script_path.parents[1]
+def normalize_components(components: Iterable[str] | None) -> tuple[str, ...]:
+    requested = set(COMPONENTS if components is None else components)
+    unknown = requested.difference(COMPONENTS)
+    if unknown:
+        raise RuntimeError(f"Unknown bootstrap components: {', '.join(sorted(unknown))}")
+    return tuple(component for component in COMPONENTS if component in requested)
+
+
+def build_file_map(source_root: Path, target_root: Path) -> list[ManagedFile]:
     bootstrap_skill_root = source_root / ".codex" / "skills" / "setup-codex-javii"
     assets = bootstrap_skill_root / "assets"
     claude_assets = source_root / ".claude" / "bootstrap-assets"
     common = assets / "common"
-    target_root = find_project_root(Path.cwd())
 
-    if (
-        not (bootstrap_skill_root / "SKILL.md").exists()
-        or not assets.exists()
-        or not claude_assets.exists()
-    ):
+    entries = [
+        ManagedFile("codex", common / "AGENTS.template.md", target_root / "AGENTS.md"),
+        ManagedFile(
+            "codex", common / "config.template.toml", target_root / ".codex/config.toml"
+        ),
+        ManagedFile(
+            "codex", assets / "hooks/hooks.json", target_root / ".codex/hooks.json"
+        ),
+        ManagedFile(
+            "codex",
+            assets / "hooks/session_start_ponytail.py",
+            target_root / ".codex/hooks/session_start_ponytail.py",
+        ),
+        ManagedFile(
+            "codex",
+            assets / "agents/project-health-auditor.toml",
+            target_root / ".codex/agents/project-health-auditor.toml",
+        ),
+        ManagedFile(
+            "codex",
+            assets / "prompts/archive-session.md",
+            target_root / ".codex/prompts/archive-session.md",
+        ),
+        ManagedFile(
+            "codex",
+            assets / "prompts/release-check.md",
+            target_root / ".codex/prompts/release-check.md",
+        ),
+        ManagedFile(
+            "codex",
+            assets / "prompts/codebase-memory-orient.md",
+            target_root / ".codex/prompts/codebase-memory-orient.md",
+        ),
+        ManagedFile(
+            "codex",
+            assets / "prompts/project-health-audit.md",
+            target_root / ".codex/prompts/project-health-audit.md",
+        ),
+    ]
+    entries.extend(
+        ManagedFile(
+            "codex",
+            assets / f"skills/{skill}/SKILL.md",
+            target_root / f".codex/skills/{skill}/SKILL.md",
+        )
+        for skill in (
+            "project-orientation",
+            "update-project-context",
+            "karpathy-guidelines",
+            "codebase-memory",
+            "ponytail",
+            "audit-web-quality",
+            "review-skill-security",
+        )
+    )
+    entries.extend(
+        [
+            ManagedFile(
+                "claude", claude_assets / "CLAUDE.template.md", target_root / "CLAUDE.md"
+            ),
+            ManagedFile(
+                "claude",
+                claude_assets / "settings.template.json",
+                target_root / ".claude/settings.json",
+            ),
+            ManagedFile(
+                "claude",
+                claude_assets / "agents/project-health-auditor.md",
+                target_root / ".claude/agents/project-health-auditor.md",
+            ),
+            ManagedFile(
+                "claude",
+                claude_assets / "output-styles/pragmatic.md",
+                target_root / ".claude/output-styles/pragmatic.md",
+            ),
+            ManagedFile(
+                "claude",
+                claude_assets / "hooks/session_start_ponytail.py",
+                target_root / ".claude/hooks/session_start_ponytail.py",
+            ),
+        ]
+    )
+    entries.extend(
+        ManagedFile(
+            "claude",
+            claude_assets / f"skills/{skill}/SKILL.md",
+            target_root / f".claude/skills/{skill}/SKILL.md",
+        )
+        for skill in (
+            "karpathy",
+            "caveman",
+            "codebase-memory",
+            "ponytail",
+            "archive",
+            "release-check",
+            "audit-web-quality",
+            "review-skill-security",
+        )
+    )
+    entries.extend(
+        [
+            ManagedFile(
+                "docs",
+                common / "project-context.template.md",
+                target_root / "docs/project-context.md",
+            ),
+            ManagedFile(
+                "docs", common / "architecture.template.md", target_root / "docs/architecture.md"
+            ),
+            ManagedFile(
+                "docs", common / "task-log.template.md", target_root / "docs/task-log.md"
+            ),
+            ManagedFile(
+                "docs",
+                common / "codebase-memory.template.md",
+                target_root / "docs/codebase-memory.md",
+            ),
+            ManagedFile(
+                "docs",
+                common / "codex-session-notes.template.md",
+                target_root / "docs/codex-session-notes.md",
+            ),
+            ManagedFile(
+                "docs", common / "README.codex.template.md", target_root / "docs/README.codex.md"
+            ),
+            ManagedFile(
+                "docs",
+                claude_assets / "claude-session-notes.template.md",
+                target_root / "docs/claude-session-notes.md",
+            ),
+            ManagedFile(
+                "github",
+                assets / "github/PULL_REQUEST_TEMPLATE.md",
+                target_root / ".github/PULL_REQUEST_TEMPLATE.md",
+            ),
+            ManagedFile(
+                "github",
+                assets / "github/ISSUE_TEMPLATE/bug_report.md",
+                target_root / ".github/ISSUE_TEMPLATE/bug_report.md",
+            ),
+            ManagedFile(
+                "github",
+                assets / "github/ISSUE_TEMPLATE/change_request.md",
+                target_root / ".github/ISSUE_TEMPLATE/change_request.md",
+            ),
+            ManagedFile(
+                "github",
+                assets / "github/ISSUE_TEMPLATE/config.yml",
+                target_root / ".github/ISSUE_TEMPLATE/config.yml",
+            ),
+            ManagedFile(
+                "shared", common / "CHANGELOG.template.md", target_root / "CHANGELOG.md"
+            ),
+        ]
+    )
+    return entries
+
+
+def bootstrap(
+    profile: str,
+    *,
+    target: Path | None = None,
+    apply: bool = False,
+    components: Iterable[str] | None = None,
+    on_conflict: str = "backup",
+) -> Report:
+    require_supported_python()
+    if profile not in PROFILES:
+        raise RuntimeError(f"Unsupported profile: {profile}")
+    if on_conflict not in CONFLICT_POLICIES:
+        raise RuntimeError(f"Unsupported conflict policy: {on_conflict}")
+
+    selected_components = normalize_components(components)
+    source_root = Path(__file__).resolve().parents[1]
+    target_root = find_project_root(Path.cwd() if target is None else target)
+    version_path = source_root / "VERSION"
+    file_map = build_file_map(source_root, target_root)
+
+    required_sources = [
+        entry.source for entry in file_map if entry.component in selected_components
+    ]
+    missing_sources = [source for source in required_sources if not source.is_file()]
+    if not version_path.is_file() or missing_sources:
+        missing = [version_path] if not version_path.is_file() else []
+        missing.extend(missing_sources)
+        details = "\n".join(f"  - {path}" for path in missing)
         raise RuntimeError(
-            "Could not locate the setup-codex-javii skill assets. "
-            "Run the script from a complete clone of this repository."
+            "Could not locate the complete setup-codex-javii assets:\n" + details
+        )
+
+    if apply:
+        # Validate every planned read and merge before the first filesystem mutation.
+        bootstrap(
+            profile,
+            target=target_root,
+            apply=False,
+            components=selected_components,
+            on_conflict=on_conflict,
         )
 
     values = {
@@ -195,172 +526,33 @@ def bootstrap(profile: str) -> Report:
         "DATE": date.today().isoformat(),
         "PRIMARY_LANGUAGE": infer_primary_language(target_root),
         "PROFILE": profile,
+        "BOOTSTRAP_VERSION": version_path.read_text(encoding="utf-8").strip(),
     }
-
     report = Report()
 
-    (target_root / ".codex" / "prompts").mkdir(parents=True, exist_ok=True)
-    (target_root / ".codex" / "skills").mkdir(parents=True, exist_ok=True)
-    (target_root / ".claude" / "skills" / "karpathy").mkdir(parents=True, exist_ok=True)
-    (target_root / ".claude" / "skills" / "caveman").mkdir(parents=True, exist_ok=True)
-    (target_root / ".claude" / "skills" / "codebase-memory").mkdir(parents=True, exist_ok=True)
-    (target_root / ".claude" / "skills" / "ponytail").mkdir(parents=True, exist_ok=True)
-    (target_root / ".claude" / "skills" / "archive").mkdir(parents=True, exist_ok=True)
-    (target_root / ".claude" / "skills" / "release-check").mkdir(parents=True, exist_ok=True)
-    (target_root / "docs").mkdir(parents=True, exist_ok=True)
+    for entry in file_map:
+        if entry.component in selected_components:
+            write_rendered_file(
+                entry.source,
+                entry.destination,
+                values,
+                report,
+                apply=apply,
+                on_conflict=on_conflict,
+            )
 
-    file_map = [
-        (common / "AGENTS.template.md", target_root / "AGENTS.md"),
-        (common / "CHANGELOG.template.md", target_root / "CHANGELOG.md"),
-        (common / "config.template.toml", target_root / ".codex" / "config.toml"),
-        (common / "project-context.template.md", target_root / "docs" / "project-context.md"),
-        (common / "architecture.template.md", target_root / "docs" / "architecture.md"),
-        (common / "task-log.template.md", target_root / "docs" / "task-log.md"),
-        (common / "codebase-memory.template.md", target_root / "docs" / "codebase-memory.md"),
-        (
-            common / "codex-session-notes.template.md",
-            target_root / "docs" / "codex-session-notes.md",
-        ),
-        (common / "README.codex.template.md", target_root / "docs" / "README.codex.md"),
-        (assets / "hooks" / "hooks.json", target_root / ".codex" / "hooks.json"),
-        (
-            assets / "hooks" / "session_start_ponytail.py",
-            target_root / ".codex" / "hooks" / "session_start_ponytail.py",
-        ),
-        (
-            assets / "agents" / "daily-project-auditor.toml",
-            target_root / ".codex" / "agents" / "daily-project-auditor.toml",
-        ),
-        (
-            assets / "prompts" / "archive-session.md",
-            target_root / ".codex" / "prompts" / "archive-session.md",
-        ),
-        (
-            assets / "prompts" / "release-check.md",
-            target_root / ".codex" / "prompts" / "release-check.md",
-        ),
-        (
-            assets / "prompts" / "codebase-memory-orient.md",
-            target_root / ".codex" / "prompts" / "codebase-memory-orient.md",
-        ),
-        (
-            assets / "github" / "PULL_REQUEST_TEMPLATE.md",
-            target_root / ".github" / "PULL_REQUEST_TEMPLATE.md",
-        ),
-        (
-            assets / "github" / "ISSUE_TEMPLATE" / "bug_report.md",
-            target_root / ".github" / "ISSUE_TEMPLATE" / "bug_report.md",
-        ),
-        (
-            assets / "github" / "ISSUE_TEMPLATE" / "change_request.md",
-            target_root / ".github" / "ISSUE_TEMPLATE" / "change_request.md",
-        ),
-        (
-            assets / "github" / "ISSUE_TEMPLATE" / "config.yml",
-            target_root / ".github" / "ISSUE_TEMPLATE" / "config.yml",
-        ),
-        (
-            assets / "github" / "codex" / "prompts" / "daily-project-health.md",
-            target_root / ".github" / "codex" / "prompts" / "daily-project-health.md",
-        ),
-        (
-            assets / "github" / "workflows" / "daily-project-health.yml",
-            target_root / ".github" / "workflows" / "daily-project-health.yml",
-        ),
-        (
-            assets / "skills" / "project-orientation" / "SKILL.md",
-            target_root / ".codex" / "skills" / "project-orientation" / "SKILL.md",
-        ),
-        (
-            assets / "skills" / "update-project-context" / "SKILL.md",
-            target_root / ".codex" / "skills" / "update-project-context" / "SKILL.md",
-        ),
-        (
-            assets / "skills" / "karpathy-guidelines" / "SKILL.md",
-            target_root / ".codex" / "skills" / "karpathy-guidelines" / "SKILL.md",
-        ),
-        (
-            assets / "skills" / "codebase-memory" / "SKILL.md",
-            target_root / ".codex" / "skills" / "codebase-memory" / "SKILL.md",
-        ),
-        (
-            assets / "skills" / "ponytail" / "SKILL.md",
-            target_root / ".codex" / "skills" / "ponytail" / "SKILL.md",
-        ),
-        (
-            assets / "skills" / "audit-web-quality" / "SKILL.md",
-            target_root / ".codex" / "skills" / "audit-web-quality" / "SKILL.md",
-        ),
-        (
-            assets / "skills" / "review-skill-security" / "SKILL.md",
-            target_root / ".codex" / "skills" / "review-skill-security" / "SKILL.md",
-        ),
-        # Claude Code infrastructure
-        (
-            claude_assets / "CLAUDE.template.md",
-            target_root / "CLAUDE.md",
-        ),
-        (
-            claude_assets / "settings.template.json",
-            target_root / ".claude" / "settings.json",
-        ),
-        (
-            claude_assets / "agents" / "daily-project-auditor.md",
-            target_root / ".claude" / "agents" / "daily-project-auditor.md",
-        ),
-        (
-            claude_assets / "output-styles" / "pragmatic.md",
-            target_root / ".claude" / "output-styles" / "pragmatic.md",
-        ),
-        (
-            claude_assets / "skills" / "karpathy" / "SKILL.md",
-            target_root / ".claude" / "skills" / "karpathy" / "SKILL.md",
-        ),
-        (
-            claude_assets / "skills" / "caveman" / "SKILL.md",
-            target_root / ".claude" / "skills" / "caveman" / "SKILL.md",
-        ),
-        (
-            claude_assets / "skills" / "codebase-memory" / "SKILL.md",
-            target_root / ".claude" / "skills" / "codebase-memory" / "SKILL.md",
-        ),
-        (
-            claude_assets / "skills" / "ponytail" / "SKILL.md",
-            target_root / ".claude" / "skills" / "ponytail" / "SKILL.md",
-        ),
-        (
-            claude_assets / "skills" / "archive" / "SKILL.md",
-            target_root / ".claude" / "skills" / "archive" / "SKILL.md",
-        ),
-        (
-            claude_assets / "skills" / "release-check" / "SKILL.md",
-            target_root / ".claude" / "skills" / "release-check" / "SKILL.md",
-        ),
-        (
-            claude_assets / "skills" / "audit-web-quality" / "SKILL.md",
-            target_root / ".claude" / "skills" / "audit-web-quality" / "SKILL.md",
-        ),
-        (
-            claude_assets / "skills" / "review-skill-security" / "SKILL.md",
-            target_root / ".claude" / "skills" / "review-skill-security" / "SKILL.md",
-        ),
-        (
-            claude_assets / "hooks" / "session_start_ponytail.py",
-            target_root / ".claude" / "hooks" / "session_start_ponytail.py",
-        ),
-        (
-            claude_assets / "claude-session-notes.template.md",
-            target_root / "docs" / "claude-session-notes.md",
-        ),
-    ]
+    if "shared" in selected_components:
+        write_mcp_json(target_root, report, apply=apply, on_conflict=on_conflict)
+        ensure_gitignore_entries(
+            target_root, report, apply=apply, on_conflict=on_conflict
+        )
 
-    for source, destination in file_map:
-        if not source.exists():
-            raise RuntimeError(f"Missing asset template: {source}")
-        write_rendered_file(source, destination, values, report)
-
-    write_mcp_json(target_root, report)
-    ensure_gitignore_entries(target_root, report)
+    legacy_workflow = target_root / LEGACY_SCHEDULED_AUDIT
+    if legacy_workflow.exists():
+        report.warnings.append(
+            f"Legacy scheduled audit still exists at {legacy_workflow}. This bootstrap will "
+            "not delete user files; remove it manually after review to stop API-key failures."
+        )
 
     return report
 
@@ -371,26 +563,71 @@ def print_paths(title: str, paths: list[Path]) -> None:
         print(f"  - {path}")
 
 
+def print_report(
+    report: Report,
+    *,
+    target_root: Path,
+    components: tuple[str, ...],
+    apply: bool,
+    on_conflict: str,
+) -> None:
+    mode = "APPLY" if apply else "PREVIEW (no files changed)"
+    print(f"setup-codex-javii mode: {mode}")
+    print(f"Target: {target_root}")
+    print(f"Components: {', '.join(components)}")
+    print(f"Existing-file policy: {on_conflict}")
+    print_paths("Files created" if apply else "Files to create", report.created)
+    print_paths(
+        "Files updated with backup" if apply else "Files to update (backup on apply)",
+        report.updated,
+    )
+    print_paths("Files unchanged", report.unchanged)
+    print_paths("Existing files preserved", report.preserved)
+    print_paths("Backups created", report.backups)
+    if report.warnings:
+        print("Warnings:")
+        for warning in report.warnings:
+            print(f"  - {warning}")
+
+    if not apply:
+        print("No files were changed. Re-run with --apply after reviewing this plan.")
+        return
+
+    print("Bootstrap complete (Codex + Claude Code).")
+    print("Recommended next steps:")
+    print("  - Review AGENTS.md, CLAUDE.md, and docs/project-context.md.")
+    print("  - Run your normal project validation before committing generated files.")
+    print(
+        "  - In Codex Desktop, request the read-only audit from "
+        ".codex/prompts/project-health-audit.md when needed."
+    )
+    print("  - Install codebase-memory-mcp only if you want the optional graph workflow.")
+
+
 def main() -> int:
-    args = parse_args()
     try:
-        report = bootstrap(args.profile)
+        require_supported_python()
+        args = parse_args()
+        components = normalize_components(args.components)
+        target_root = find_project_root(args.target)
+        report = bootstrap(
+            args.profile,
+            target=target_root,
+            apply=args.apply,
+            components=components,
+            on_conflict=args.on_conflict,
+        )
     except Exception as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
 
-    print("Bootstrap complete (Codex + Claude Code).")
-    print_paths("Files created", report.created)
-    print_paths("Files updated with backup", report.updated)
-    print_paths("Files skipped", report.skipped)
-    print_paths("Backups created", report.backups)
-    print("Recommended next steps:")
-    print("  - Review AGENTS.md and docs/project-context.md.")
-    print("  - Add project-specific details to docs/architecture.md and docs/task-log.md.")
-    print("  - Review CLAUDE.md and .claude/settings.json for Claude Code configuration.")
-    print("  - Claude skills available: /karpathy /caveman /codebase-memory /ponytail /archive /release-check /audit-web-quality /review-skill-security")
-    print("  - Install codebase-memory-mcp (see docs/codebase-memory.md) then index this project.")
-    print("  - Run your normal validation before committing generated files.")
+    print_report(
+        report,
+        target_root=target_root,
+        components=components,
+        apply=args.apply,
+        on_conflict=args.on_conflict,
+    )
     return 0
 
 

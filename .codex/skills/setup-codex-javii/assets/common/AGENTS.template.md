@@ -10,6 +10,7 @@ Help implement, validate, and document changes in a clear, incremental, reviewab
 
 - `.codex/config.toml`: local Codex configuration.
 - `.codex/prompts/`: reusable project prompts.
+- `.codex/agents/`: on-demand Codex-only agent definitions.
 - `.codex/skills/`: local project skills.
 - `docs/project-context.md`: main project context.
 - `docs/architecture.md`: technical structure.
@@ -23,6 +24,7 @@ Help implement, validate, and document changes in a clear, incremental, reviewab
 - Keep changes small and directly related to the task.
 - Do not introduce dependencies, services, or abstractions without a clear need.
 - Do not overwrite existing work without understanding it.
+- Treat this repository as trusted: the generated Codex profile has full local autonomy and no approval prompts.
 - Record important decisions in `docs/task-log.md`.
 
 ## Validation

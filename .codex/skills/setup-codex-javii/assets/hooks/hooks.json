@@ -6,8 +6,10 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python .codex/hooks/session_start_ponytail.py",
-            "timeout": 10
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/session_start_ponytail.py\"",
+            "commandWindows": "python \"$(git rev-parse --show-toplevel)/.codex/hooks/session_start_ponytail.py\"",
+            "timeout": 10,
+            "statusMessage": "Activating Ponytail Lite"
           }
         ]
       }

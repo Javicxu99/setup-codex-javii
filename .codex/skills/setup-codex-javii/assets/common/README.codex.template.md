@@ -10,8 +10,8 @@ This project was initialized with the `{{PROFILE}}` profile on {{DATE}}.
 4. Keep changes small and record durable decisions in `docs/task-log.md`.
 5. Run relevant validation before declaring completion.
 
-Ponytail Lite is injected at each new Codex session. The project includes a Codex-native,
-read-only `daily-project-auditor` definition.
+Ponytail Lite is injected at each new Codex session. The project includes an on-demand,
+read-only `project-health-auditor` definition and matching manual prompt.
 
 ## Local skills
 
@@ -27,7 +27,8 @@ read-only `daily-project-auditor` definition.
 
 Install `codebase-memory-mcp` from https://github.com/DeusData/codebase-memory-mcp, restart Codex, and index this repository with `index_repository`. The project `.mcp.json` registers the server command. Do not commit generated graph database files.
 
-## Daily audit
+## Manual project health audit
 
-Add `OPENAI_API_KEY` as a GitHub Actions secret to enable the portable daily audit. It runs
-`gpt-5.6-sol` with high reasoning in a read-only sandbox at 03:17 UTC and on manual dispatch.
+Open this repository in Codex Desktop while signed in with ChatGPT, then ask Codex to run
+`.codex/prompts/project-health-audit.md`. The audit uses the active Codex session, requires no
+API key, and remains read-only. No scheduled GitHub workflow is generated.

@@ -1,13 +1,15 @@
 # {{PROJECT_NAME}}
 
-Initialized {{DATE}} with setup-codex-javii (v2). Primary language: {{PRIMARY_LANGUAGE}}.
+Initialized {{DATE}} with setup-codex-javii v{{BOOTSTRAP_VERSION}}. Primary language: {{PRIMARY_LANGUAGE}}.
 
 Read `docs/project-context.md` for full context before important tasks.
+
+This generated profile uses `bypassPermissions` and is intended only for a trusted repository.
 
 ## Project Structure
 
 - `.claude/settings.json` - Claude Code configuration (`claude-fable-5`, high, Pragmatic, bypassPermissions)
-- `.claude/agents/` - Claude-specific read-only project auditor
+- `.claude/agents/` - Claude-specific on-demand read-only project auditor
 - `.claude/hooks/` - Claude SessionStart hooks
 - `.claude/output-styles/` - concise Pragmatic output style
 - `.claude/skills/` - Claude Code skills (karpathy, codebase-memory, ponytail, audit-web-quality, review-skill-security, archive, release-check; Caveman retained but disabled)

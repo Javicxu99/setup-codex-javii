@@ -1,34 +1,50 @@
 # Release Process
 
-Use this process when publishing a new version of `setup-codex-javii`.
+Use semantic versioning and publish releases through a reviewed branch.
 
-## Versioning
+## Prepare
 
-- Use semantic versioning: `MAJOR.MINOR.PATCH`.
-- Update `VERSION` with the new version.
-- Move relevant `CHANGELOG.md` entries from `Unreleased` into the new version section.
-- Keep commit messages concise and outcome-oriented.
-- Use Git tags for published versions: `v1.0.1`, `v1.1.0`, etc.
+1. Create a focused branch from current `main`.
+2. Update `VERSION` and move the matching `CHANGELOG.md` entry out of `Unreleased`.
+3. Confirm the README, command reference, setup skill, generated templates, and tests describe the same behavior.
+4. Confirm no secret, API-key requirement, scheduled model workflow, raw transcript, backup, or temporary file is tracked.
 
-## Pre-Release Checklist
+## Validate
 
-1. Review `git status --short --branch`.
-2. Run the bootstrap validation from `README.md`.
-3. Verify `CHANGELOG.md` and `VERSION` match the intended release.
-4. Confirm no secrets, temporary files, or raw transcripts are staged.
-5. Commit the release changes.
-6. Tag the release.
-7. Push the branch and tag to GitHub.
+Use Python 3.11 or newer:
 
-## Commands
-
-```bash
-git status
-git add .
-git commit -m "2.2.0 Align Codex defaults and graph integration"
-git tag -a v2.2.0 -m "v2.2.0"
-git push
-git push origin v2.2.0
+```powershell
+python -m py_compile scripts\setup_codex_javii.py
+python -m unittest discover -s tests -v
+git diff --check
+git status --short --branch
 ```
 
-After pushing, create a GitHub Release from the tag and paste the matching `CHANGELOG.md` entry.
+The tests must include an end-to-end temporary repository run covering default preview,
+explicit apply, repeat idempotency, backup creation for a changed file, conflict preservation,
+component isolation, invalid MCP preflight, provider boundaries, and absence of the retired
+scheduled workflow.
+
+Inspect both `git diff` and `git diff --stat` before committing.
+
+## Publish the change
+
+```powershell
+git add .
+git commit -m "Release 3.0.0 safe bootstrap workflow"
+git push -u origin HEAD
+```
+
+Open a pull request into `main` with the behavior change, validation evidence, compatibility
+notes, and remaining risks. Do not tag from the feature branch.
+
+## Publish the release after merge
+
+1. Update local `main` from the remote.
+2. Verify `VERSION` and the changelog entry match the merged code.
+3. Re-run the release validation.
+4. Create an annotated `v<version>` tag on the merged `main` commit.
+5. Push the tag and create a GitHub Release using the matching changelog section.
+
+Tags and GitHub Releases are intentionally separate from the pull request so an unmerged commit
+cannot become the published release accidentally.

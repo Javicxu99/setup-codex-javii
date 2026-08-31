@@ -1,10 +1,20 @@
 # setup-codex-javii
 
-Reusable bootstrap for starting projects with a consistent Codex and Claude Code setup.
+Dependency-free bootstrap for starting trusted projects with coordinated but strictly separated
+Codex and Claude Code environments.
 
-## Defaults
+## Requirements
 
-Generated Codex projects use:
+- Git.
+- Python 3.11 or newer. Python 3.10 reaches end of support in October 2026, so it is no longer a sensible baseline for new projects.
+- Codex Desktop, Codex CLI, or the IDE extension signed in with ChatGPT for Codex work. No OpenAI API key is required or used by this repository.
+- Claude Code only when the optional Claude component is wanted.
+
+The bootstrap itself never installs tools, dependencies, models, plugins, or secrets.
+
+## Trusted-repository autonomy
+
+Generated Codex projects deliberately use full local autonomy:
 
 ```toml
 model = "gpt-5.6-sol"
@@ -22,29 +32,28 @@ hooks = true
 multi_agent = true
 ```
 
-`gpt5.6sol` is the requested human-facing name; the supported Codex identifier is `gpt-5.6-sol`. Full access is deliberate for a personal bootstrap and should only be used in trusted repositories. Organization requirements can still restrict it.
+Claude uses `claude-fable-5`, high effort, the Pragmatic output style, and
+`bypassPermissions`. These settings avoid confirmation prompts by design. Use this bootstrap only
+for personal repositories whose contents, hooks, MCP configuration, and dependencies you trust.
+Organization policy can still impose stricter controls.
 
-## What it generates
+## Generated components
 
-- Provider boundaries are strict: `.codex/` contains OpenAI/Codex configuration and `.claude/` contains Anthropic/Claude Code configuration. Models, agents, hooks, and provider templates never cross those directories; only equivalent project skills and shared repository context are maintained for both.
-- `AGENTS.md`, `CLAUDE.md`, `CHANGELOG.md`, and a managed `.gitignore` block.
-- `.codex/config.toml`, a Ponytail `SessionStart` hook, reusable prompts, skills, and a read-only high-reasoning auditor agent.
-- `.claude/settings.json`, matching skills and auditor agent, and the Pragmatic output style.
-- `.mcp.json` with `codebase-memory-mcp`, preserving other configured servers.
-- Project context, architecture, task log, graph guidance, and curated session notes under `docs/`.
-- Lightweight GitHub templates and an optional daily project-health workflow.
+The default installation includes every component. `--components` can select any subset:
 
-Included Codex skills:
+| Component | Generated scope |
+| --- | --- |
+| `codex` | `AGENTS.md`, `.codex/config.toml`, Codex-only agents, hooks, prompts, and skills |
+| `claude` | `CLAUDE.md`, `.claude/settings.json`, Claude-only agents, hooks, output style, and skills |
+| `docs` | Project context, architecture, task log, graph guidance, and curated session notes |
+| `github` | Pull request and issue templates only |
+| `shared` | `CHANGELOG.md`, managed `.gitignore` entries, and additive `.mcp.json` registration |
 
-- `project-orientation`: establish context before broad changes.
-- `update-project-context`: keep living documentation synchronized.
-- `karpathy-guidelines`: small, surgical, empirically validated changes.
-- `codebase-memory`: graph-first code discovery with a documented fallback.
-- `ponytail`: optional YAGNI-focused implementation mode.
-- `audit-web-quality`: evidence-led web accessibility, performance, security, compatibility, and SEO review.
-- `review-skill-security`: supply-chain review before adopting external skills, plugins, or MCP bundles.
+Provider boundaries are strict: OpenAI models and Codex configuration never enter `.claude/`,
+and Anthropic models and Claude configuration never enter `.codex/`. Shared repository context
+and the credential-free `.mcp.json` remain provider-neutral.
 
-## Quick start
+## Safe installation
 
 Clone the bootstrap once:
 
@@ -52,55 +61,78 @@ Clone the bootstrap once:
 git clone https://github.com/Javicxu99/setup-codex-javii.git
 ```
 
-From the target repository root:
+From the target repository root, run the Windows launcher:
 
 ```powershell
 C:\path\to\setup-codex-javii\iniciar-setup.cmd
 ```
 
-Or run the dependency-free Python entry point:
+The launcher finds a compatible Python, prints a complete preview, and asks before applying it.
+Use `-Apply` to keep the preview but skip the launcher question:
 
 ```powershell
-python C:\path\to\setup-codex-javii\scripts\setup_codex_javii.py --profile default
+C:\path\to\setup-codex-javii\iniciar-setup.ps1 -Apply
 ```
 
-The script detects `.git`, `pyproject.toml`, `package.json`, `Cargo.toml`, or `go.mod`. Before overwriting a managed destination it creates `.bak`, `.bak.1`, and later backups. When `.mcp.json` already exists, including UTF-8 files with a BOM, it preserves its servers and adds or updates only `codebase-memory-mcp`.
+The Python entry point is also preview-only by default:
 
-## Codebase Memory MCP
+```powershell
+python C:\path\to\setup-codex-javii\scripts\setup_codex_javii.py --target C:\path\to\project
+```
+
+Apply the reviewed plan explicitly:
+
+```powershell
+python C:\path\to\setup-codex-javii\scripts\setup_codex_javii.py --target C:\path\to\project --apply
+```
+
+Install only selected scopes or preserve every existing conflicting file:
+
+```powershell
+python C:\path\to\setup-codex-javii\scripts\setup_codex_javii.py --target C:\path\to\project --components codex docs github --on-conflict skip --apply
+```
+
+Behavior is deterministic:
+
+- Preview mode performs all template, text-decoding, and JSON-merge checks without writing.
+- `--apply` repeats that full preflight before the first mutation.
+- Changed existing files are copied to `.bak`, `.bak.1`, and later numbered backups before replacement.
+- Each replacement is atomic. A write failure does not leave a partially written destination.
+- Identical files are left untouched and do not create another backup.
+- `--on-conflict skip` preserves every existing destination and creates only missing files.
+- `.mcp.json` is merged additively, including UTF-8 files with a BOM; unrelated servers remain intact.
+
+`-NoCodebaseMemory` and its legacy alias `-NoCodeGraph` suppress only the launcher's optional
+post-install availability check. Use `--components` when you want to omit generated scopes.
+
+## Manual project health audit
+
+The previous scheduled GitHub Actions audit has been removed. It required
+`OPENAI_API_KEY`, failed when the secret was absent, and could not reuse a Codex Desktop/ChatGPT
+session. This project does not replace it with another external automation.
+
+To audit a project without an API key:
+
+1. Open the target repository in Codex Desktop while signed in with ChatGPT.
+2. Ask: `Run the read-only audit in .codex/prompts/project-health-audit.md and report findings only.`
+3. Review the result before asking Codex to implement any finding.
+
+The prompt and the `project-health-auditor` agent are read-only. They do not install, edit,
+publish, or call external services.
+
+### Migration from 2.4 or earlier
+
+The bootstrap never deletes target-project files. If an older generated project still contains
+`.github/workflows/daily-project-health.yml`, review and delete that file manually to stop its
+scheduled API-key failures. The new bootstrap prints a warning when it detects that legacy file.
+
+## Optional Codebase Memory MCP
 
 Source: https://github.com/DeusData/codebase-memory-mcp (MIT).
 
-Install the binary once per machine using the upstream instructions. The generated `.mcp.json` registers:
-
-```json
-{
-  "mcpServers": {
-    "codebase-memory-mcp": {
-      "command": "codebase-memory-mcp"
-    }
-  }
-}
-```
-
-After installation, restart Codex and index the target repository with the MCP `index_repository` tool. Agents should prefer:
-
-1. `search_graph` for symbols and routes.
-2. `trace_path` for callers, callees, and impact.
-3. `get_code_snippet` after resolving an exact qualified name.
-4. `query_graph` for complex relationships.
-5. `get_architecture` for a high-level map.
-
-Use `rg` and direct file reads for literals, configuration, non-code files, or when the graph is unavailable.
-
-## Claude Code
-
-The generated settings use the exact model accepted by the installed Claude CLI, `claude-fable-5`, with `high` effort, the `Pragmatic` output style, project MCP enablement, and `bypassPermissions`. Secret reads remain denied explicitly. This autonomy is intended only for trusted repositories. Caveman remains available in the template for provenance but is disabled through `skillOverrides`; Ponytail is injected by Claude's own SessionStart hook. Claude templates live under `.claude/bootstrap-assets/`, never under `.codex/`.
-
-## Daily project health
-
-`.github/workflows/daily-project-health.yml` runs every day at 03:17 UTC and can also be started manually. It invokes `gpt-5.6-sol` with `high` reasoning in a read-only sandbox, audits agent definitions first and then the complete repository, uploads a 30-day report, and opens or updates an issue only for actionable findings.
-
-After bootstrap, add an `OPENAI_API_KEY` Actions secret to the target repository. Without that secret the workflow fails safely with an explicit message. A Codex desktop scheduled task is not generated because desktop tasks are machine-local and require the target checkout to be registered in the app; the repository workflow is portable and versioned.
+Install it separately only if the project benefits from graph-based orientation. The generated
+`.mcp.json` registers the `codebase-memory-mcp` command but does not install or execute it.
+Direct file search remains the documented fallback.
 
 ## Validation
 
@@ -108,21 +140,24 @@ From this repository:
 
 ```powershell
 python -m py_compile scripts\setup_codex_javii.py
-```
-
-For an end-to-end check, create a temporary Git repository, run the bootstrap twice, and verify that the second run creates backups. Also test a pre-existing `.mcp.json` to confirm that unrelated MCP servers remain intact.
-
-```powershell
+python -m unittest discover -s tests -v
 git diff --check
 git status --short --branch
 ```
 
-## Design constraints
+The standard-library test suite covers preview immutability, explicit apply, atomic backup-safe
+updates, idempotent repeats, conflict preservation, component selection, invalid MCP preflight,
+provider boundaries, hook execution, and the removal of the scheduled workflow.
 
-- Standard Python only; no runtime package dependency.
-- Universal, dormant-on-demand skills rather than domain-specific scaffolding or installed toolchains.
-- Small operational `AGENTS.md`; durable context belongs in `docs/`.
-- No automatic binary installation or secret handling.
-- Generated local state and raw transcripts remain outside version control.
+## Current documentation basis
 
-The complete assessment of projects considered for this setup is in [`docs/notion-candidate-audit.md`](docs/notion-candidate-audit.md).
+Behavior was reviewed on 2026-08-31 against primary documentation:
+
+- [OpenAI authentication](https://learn.chatgpt.com/docs/auth) for ChatGPT sign-in without an API key.
+- [Codex AGENTS.md discovery](https://learn.chatgpt.com/docs/agent-configuration/agents-md) and [Codex hooks](https://learn.chatgpt.com/docs/hooks).
+- [Claude Code model configuration](https://code.claude.com/docs/en/model-config), [settings](https://code.claude.com/docs/en/settings), and [permission modes](https://code.claude.com/docs/en/permission-modes).
+- [Python version status](https://devguide.python.org/versions/) for the Python 3.11 minimum.
+
+The existing candidate assessment remains in
+[`docs/notion-candidate-audit.md`](docs/notion-candidate-audit.md); this release does not import
+any new repository or Notion content.

@@ -73,6 +73,12 @@ class BootstrapTests(unittest.TestCase):
             "docs/compliance/eu-ai-act/legal-baseline.json",
             "docs/compliance/eu-ai-act/intake.json",
             "docs/compliance/eu-ai-act/high-risk/README.md",
+            ".codex/skills/archify/SKILL.md",
+            ".claude/skills/archify/SKILL.md",
+            "scripts/run_archify.py",
+            "third_party/archify/bin/archify.mjs",
+            "third_party/archify/LICENSE",
+            "docs/third-party/archify.md",
             "docs/claude-session-notes.md",
             ".github/PULL_REQUEST_TEMPLATE.md",
         ):
@@ -147,7 +153,7 @@ class BootstrapTests(unittest.TestCase):
         self.assertEqual(second.created, [])
         self.assertEqual(second.updated, [])
         self.assertEqual(second.backups, [])
-        self.assertGreater(len(second.unchanged), 30)
+        self.assertGreater(len(second.unchanged), 90)
         self.assertFalse((target / "AGENTS.md.bak.1").exists())
 
     def test_compliance_evidence_is_create_only(self) -> None:
@@ -231,6 +237,39 @@ class BootstrapTests(unittest.TestCase):
         self.assertFalse((target / "AGENTS.md").exists())
         self.assertFalse((target / "CLAUDE.md").exists())
         self.assertFalse((target / ".mcp.json").exists())
+
+    def test_archify_component_is_selectable_and_preserves_user_outputs(self) -> None:
+        module = load_bootstrap_module()
+        temporary_directory, target = create_target()
+        self.addCleanup(temporary_directory.cleanup)
+
+        module.bootstrap("default", target=target, apply=True, components=("archify",))
+
+        self.assertTrue((target / "scripts/run_archify.py").is_file())
+        self.assertTrue((target / "third_party/archify/bin/archify.mjs").is_file())
+        self.assertTrue((target / ".codex/skills/archify/SKILL.md").is_file())
+        self.assertTrue((target / ".claude/skills/archify/SKILL.md").is_file())
+        self.assertFalse((target / "AGENTS.md").exists())
+        self.assertFalse((target / "CLAUDE.md").exists())
+        self.assertFalse((target / ".mcp.json").exists())
+
+        source = target / "docs/system-map.archify.json"
+        artifact = target / "docs/system-map.html"
+        source.parent.mkdir(parents=True, exist_ok=True)
+        source.write_text('{"human_authored": true}\n', encoding="utf-8")
+        artifact.write_text("<html>human artifact</html>\n", encoding="utf-8")
+
+        repeated = module.bootstrap(
+            "default", target=target, apply=True, components=("archify",)
+        )
+
+        self.assertEqual(source.read_text(encoding="utf-8"), '{"human_authored": true}\n')
+        self.assertEqual(
+            artifact.read_text(encoding="utf-8"), "<html>human artifact</html>\n"
+        )
+        self.assertEqual(repeated.created, [])
+        self.assertEqual(repeated.updated, [])
+        self.assertEqual(repeated.backups, [])
 
     def test_cli_defaults_to_preview_then_applies_explicitly(self) -> None:
         temporary_directory, target = create_target()
@@ -320,6 +359,14 @@ class BootstrapTests(unittest.TestCase):
             (
                 ".claude/skills/eu-ai-act-governance/SKILL.md",
                 ".claude/bootstrap-assets/skills/eu-ai-act-governance/SKILL.md",
+            ),
+            (
+                ".codex/skills/archify/SKILL.md",
+                ".codex/skills/setup-codex-javii/assets/skills/archify/SKILL.md",
+            ),
+            (
+                ".claude/skills/archify/SKILL.md",
+                ".claude/bootstrap-assets/skills/archify/SKILL.md",
             ),
         )
         for live_path, asset_path in pairs:

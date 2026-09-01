@@ -1,5 +1,16 @@
 # Task Log
 
+## 2026-09-01 - Archify integration 3.2
+
+- Added Archify 2.16.0 at pinned commit `199360cc6687a7857b54dd188d4922b09e466a4b`
+  as a default/selectable provider-neutral component under the upstream MIT license.
+- Added concise Codex and Claude skills, a portable Node.js 18+ runner, schemas, examples,
+  deterministic rendering, showcase validation, and delivery receipts.
+- Removed automatic update checking and web-font requests; kept remote brand capture and browser
+  actions explicit opt-ins and documented residual risks plus the pinned update procedure.
+- Preserved zero bootstrap dependencies, provider separation, project-owned outputs, safe repeats,
+  and the existing full-autonomy and compliance behavior.
+
 ## 2026-08-31 - EU AI Act governance baseline 3.1
 
 - Added the default/selectable `compliance` component, dated official source baseline,

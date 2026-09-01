@@ -28,6 +28,7 @@ Help implement, validate, and document changes in a clear, incremental, reviewab
 - Treat this repository as trusted: the generated Codex profile has full local autonomy and no approval prompts.
 - Record important decisions in `docs/task-log.md`.
 - Before release, complete the EU AI Act intake and run `python scripts/check_eu_ai_act.py --root .`; never treat the result as legal advice or certification.
+- Use the `archify` skill for architecture visuals; keep sources and outputs outside `third_party/archify` and validate showcase quality before delivery.
 
 ## Validation
 

@@ -18,6 +18,9 @@
 - Keep the active bootstrap universal: specialist skills may be present when they are dormant until relevant and add no required toolchain.
 - Keep EU AI Act governance conditional: JSON for deterministic inputs, Markdown for human evidence,
   official dated sources, fail-closed unknowns, and high-risk templates inactive until classified.
+- Vendor Archify at an exact reviewed commit as a provider-neutral selectable component; exclude its
+  updater and development-only repository context, require Node only at use time, and never manage
+  project-owned diagram inputs or outputs.
 
 ## Non-Goals
 

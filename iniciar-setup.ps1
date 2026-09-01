@@ -5,8 +5,8 @@ param(
 
     [switch]$Apply,
 
-    [ValidateSet("codex", "claude", "docs", "github", "compliance", "shared")]
-    [string[]]$Components = @("codex", "claude", "docs", "github", "compliance", "shared"),
+    [ValidateSet("codex", "claude", "docs", "github", "compliance", "archify", "shared")]
+    [string[]]$Components = @("codex", "claude", "docs", "github", "compliance", "archify", "shared"),
 
     [ValidateSet("backup", "skip")]
     [string]$OnConflict = "backup"

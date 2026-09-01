@@ -9,6 +9,7 @@ Codex and Claude Code environments.
 - Python 3.11 or newer. Python 3.10 reaches end of support in October 2026, so it is no longer a sensible baseline for new projects.
 - Codex Desktop, Codex CLI, or the IDE extension signed in with ChatGPT for Codex work. No OpenAI API key is required or used by this repository.
 - Claude Code only when the optional Claude component is wanted.
+- Node.js 18 or newer only when the optional Archify diagram runtime is used after bootstrap.
 
 The bootstrap itself never installs tools, dependencies, models, plugins, or secrets.
 
@@ -48,6 +49,7 @@ The default installation includes every component. `--components` can select any
 | `docs` | Project context, architecture, task log, graph guidance, and curated session notes |
 | `github` | Pull request and issue templates only |
 | `compliance` | Dated EU AI Act baseline, conditional intake/evidence, deterministic checker, and manual provider skills |
+| `archify` | Pinned offline-first diagram renderer, portable runner, provider skills, examples, schemas, and provenance |
 | `shared` | `CHANGELOG.md`, managed `.gitignore` entries, and additive `.mcp.json` registration |
 
 Provider boundaries are strict: OpenAI models and Codex configuration never enter `.claude/`,
@@ -106,6 +108,25 @@ Behavior is deterministic:
 `-NoCodebaseMemory` and its legacy alias `-NoCodeGraph` suppress only the launcher's optional
 post-install availability check. Use `--components` when you want to omit generated scopes.
 
+## Archify diagrams
+
+The default bootstrap includes [Archify](https://github.com/tt-a1i/archify) 2.16.0 pinned to
+commit `199360cc6687a7857b54dd188d4922b09e466a4b` under its MIT license. The bootstrap does not
+install Node.js or packages. When Node.js 18+ is already available, verify and use it with:
+
+```powershell
+python scripts\run_archify.py doctor
+python scripts\run_archify.py validate architecture path\to\diagram.json --quality showcase --json
+python scripts\run_archify.py deliver architecture path\to\diagram.json path\to\diagram.html --quality showcase --json
+```
+
+The Codex and Claude Code `archify` skills guide schema-first authoring and validation. Automatic
+update checks and web-font requests were removed. Remote brand capture and browser-opening commands
+are allowed only when explicitly requested; the normal workflow is local. Store diagram sources and
+HTML in project-owned paths, not `third_party/archify`. See
+[`docs/third-party/archify.md`](docs/third-party/archify.md) for the audit, exact source, adaptation,
+license, residual risks, and pinned update procedure.
+
 ## EU AI Act governance
 
 The default bootstrap includes a lightweight governance component dated `2026-08-31`. It uses
@@ -138,6 +159,13 @@ to the Commission FAQ; that does not exempt other output types or uses. The base
 
 Use `.codex/prompts/eu-ai-act-intake.md`, the `eu-ai-act-governance` Codex/Claude skill, and
 [`docs/compliance/eu-ai-act/README.md`](docs/compliance/eu-ai-act/README.md) for the manual flow.
+
+### Migration from 3.1.0
+
+Version 3.2.0 is additive. A default apply creates the `archify` runtime, runner, documentation,
+and provider skills. Targets that do not want it can omit `archify` with `--components`. Existing
+project diagram inputs and outputs are never managed by the bootstrap. No Node.js installation,
+package installation, automatic network request, or background process is introduced.
 
 ### Migration from 3.0.0
 
@@ -181,9 +209,11 @@ Direct file search remains the documented fallback.
 From this repository:
 
 ```powershell
-python -m py_compile scripts\setup_codex_javii.py scripts\check_eu_ai_act.py
+python -m py_compile scripts\setup_codex_javii.py scripts\check_eu_ai_act.py scripts\run_archify.py
 python -m unittest discover -s tests -v
-python scripts\check_eu_ai_act.py --root . --as-of-date 2026-08-31
+python scripts\check_eu_ai_act.py --root . --as-of-date 2026-09-01
+python scripts\run_archify.py doctor
+python scripts\run_archify.py validate architecture third_party\archify\examples\web-app.architecture.json --quality showcase --json
 git diff --check
 git status --short --branch
 ```
@@ -191,7 +221,8 @@ git status --short --branch
 The standard-library test suite covers preview immutability, explicit apply, atomic backup-safe
 updates, idempotent repeats, conflict preservation, component selection, invalid MCP preflight,
 provider boundaries, hook execution, the retired scheduled workflow, eight required legal
-scenarios, and baseline/milestone freshness.
+scenarios, baseline/milestone freshness, Archify component isolation, renderer syntax, showcase
+validation, HTML delivery, offline policy, and useful missing-Node diagnostics.
 
 ## Current documentation basis
 

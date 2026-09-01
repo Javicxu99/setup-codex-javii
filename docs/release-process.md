@@ -14,9 +14,11 @@ Use semantic versioning and publish releases through a reviewed branch.
 Use Python 3.11 or newer:
 
 ```powershell
-python -m py_compile scripts\setup_codex_javii.py scripts\check_eu_ai_act.py
+python -m py_compile scripts\setup_codex_javii.py scripts\check_eu_ai_act.py scripts\run_archify.py
 python -m unittest discover -s tests -v
 python scripts\check_eu_ai_act.py --root .
+python scripts\run_archify.py doctor
+python scripts\run_archify.py validate architecture third_party\archify\examples\web-app.architecture.json --quality showcase --json
 git diff --check
 git status --short --branch
 ```
@@ -25,7 +27,8 @@ The tests must include an end-to-end temporary repository run covering default p
 explicit apply, repeat idempotency, backup creation for a changed file, conflict preservation,
 component isolation, invalid MCP preflight, provider boundaries, and absence of the retired
 scheduled workflow. It must also cover the required EU AI Act classification scenarios,
-baseline freshness, and an installed-project checker run.
+baseline freshness, an installed-project checker run, Archify component isolation, missing-Node
+diagnostics, renderer syntax, showcase validation, and HTML delivery.
 
 Inspect both `git diff` and `git diff --stat` before committing.
 
@@ -33,7 +36,7 @@ Inspect both `git diff` and `git diff --stat` before committing.
 
 ```powershell
 git add .
-git commit -m "Release 3.1.0 EU AI Act governance baseline"
+git commit -m "Release 3.2.0 Archify integration"
 git push -u origin HEAD
 ```
 

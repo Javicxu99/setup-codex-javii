@@ -24,6 +24,7 @@ read-only `project-health-auditor` definition and matching manual prompt.
 - `audit-web-quality`
 - `review-skill-security`
 - `eu-ai-act-governance`
+- `archify`
 
 ## Graph setup
 
@@ -40,3 +41,9 @@ API key, and remains read-only. No scheduled GitHub workflow is generated.
 Use `docs/compliance/eu-ai-act/README.md` for the minimal no-AI route or the conditional AI route.
 The checker is deterministic, dependency-free, and local. It supports governance and escalation;
 it is not legal advice, certification, conformity assessment, or a guarantee of compliance.
+
+## Architecture diagrams
+
+Use the `archify` skill and run `python scripts/run_archify.py doctor` before authoring. Node.js
+18+ is optional and not installed by the bootstrap. Keep project diagram JSON and delivered HTML
+outside `third_party/archify`; validate with showcase quality before delivery.

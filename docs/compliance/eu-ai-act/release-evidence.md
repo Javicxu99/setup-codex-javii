@@ -1,10 +1,10 @@
 # EU AI Act release evidence
 
-- Version: 3.1.0
+- Version: 3.2.0
 - Classification: `BASELINE`
-- Assessment date: 2026-08-31
+- Assessment date: 2026-09-01
 - Legal baseline: 2026-08-31
-- Checker: `python scripts/check_eu_ai_act.py --root . --as-of-date 2026-08-31`
+- Checker: `python scripts/check_eu_ai_act.py --root . --as-of-date 2026-09-01`
 - Expected gate: `PASS`
 - Human owner: Javier
 
@@ -13,7 +13,7 @@
 - Intended purpose, EU scope, operator role, prohibited-practice signals, Article 50 triggers,
   high-risk signals, third-party models, AI literacy, oversight, incidents, and change triggers.
 - Official source register in `legal-baseline.json`.
-- Deterministic scenario tests and bootstrap end-to-end installation.
+- Deterministic scenario tests, Archify security/provenance review, and bootstrap end-to-end installation.
 
 ## Limit
 

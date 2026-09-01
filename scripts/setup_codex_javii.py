@@ -18,7 +18,15 @@ from typing import Iterable
 MIN_PYTHON = (3, 11)
 ROOT_MARKERS = (".git", "pyproject.toml", "package.json", "Cargo.toml", "go.mod")
 PROFILES = ("default",)
-COMPONENTS = ("codex", "claude", "docs", "github", "compliance", "shared")
+COMPONENTS = (
+    "codex",
+    "claude",
+    "docs",
+    "github",
+    "compliance",
+    "archify",
+    "shared",
+)
 CONFLICT_POLICIES = ("backup", "skip")
 LEGACY_SCHEDULED_AUDIT = Path(".github/workflows/daily-project-health.yml")
 MANAGED_GITIGNORE_BLOCK = """# setup-codex-javii managed local state
@@ -323,6 +331,7 @@ def build_file_map(source_root: Path, target_root: Path) -> list[ManagedFile]:
     common = assets / "common"
     compliance_assets = assets / "compliance"
     compliance_docs = source_root / "docs" / "compliance" / "eu-ai-act"
+    archify_runtime = source_root / "third_party" / "archify"
 
     entries = [
         ManagedFile("codex", common / "AGENTS.template.md", target_root / "AGENTS.md"),
@@ -537,6 +546,39 @@ def build_file_map(source_root: Path, target_root: Path) -> list[ManagedFile]:
             ),
         ]
     )
+    entries.extend(
+        [
+            ManagedFile(
+                "archify",
+                source_root / "scripts/run_archify.py",
+                target_root / "scripts/run_archify.py",
+            ),
+            ManagedFile(
+                "archify",
+                source_root / ".codex/skills/archify/SKILL.md",
+                target_root / ".codex/skills/archify/SKILL.md",
+            ),
+            ManagedFile(
+                "archify",
+                source_root / ".claude/skills/archify/SKILL.md",
+                target_root / ".claude/skills/archify/SKILL.md",
+            ),
+            ManagedFile(
+                "archify",
+                source_root / "docs/third-party/archify.md",
+                target_root / "docs/third-party/archify.md",
+            ),
+        ]
+    )
+    entries.extend(
+        ManagedFile(
+            "archify",
+            source,
+            target_root / "third_party/archify" / source.relative_to(archify_runtime),
+        )
+        for source in sorted(archify_runtime.rglob("*"))
+        if source.is_file()
+    )
     return entries
 
 
@@ -669,6 +711,11 @@ def print_report(
         print(
             "  - Complete docs/compliance/eu-ai-act/intake.json, then run "
             "python scripts/check_eu_ai_act.py --root . before release."
+        )
+    if "archify" in components:
+        print(
+            "  - For Archify, run python scripts/run_archify.py doctor; "
+            "Node.js 18 or newer is required only when the skill is used."
         )
     print("  - Install codebase-memory-mcp only if you want the optional graph workflow.")
 

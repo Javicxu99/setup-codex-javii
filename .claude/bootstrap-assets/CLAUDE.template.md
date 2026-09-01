@@ -12,7 +12,7 @@ This generated profile uses `bypassPermissions` and is intended only for a trust
 - `.claude/agents/` - Claude-specific on-demand read-only project auditor
 - `.claude/hooks/` - Claude SessionStart hooks
 - `.claude/output-styles/` - concise Pragmatic output style
-- `.claude/skills/` - Claude Code skills (karpathy, codebase-memory, ponytail, audit-web-quality, review-skill-security, archive, release-check, eu-ai-act-governance; Caveman retained but disabled)
+- `.claude/skills/` - Claude Code skills (karpathy, codebase-memory, ponytail, audit-web-quality, review-skill-security, archive, release-check, eu-ai-act-governance, archify; Caveman retained but disabled)
 - `.mcp.json` - MCP server config (codebase-memory-mcp)
 - `docs/project-context.md` - main project context
 - `docs/architecture.md` - technical architecture
@@ -61,6 +61,7 @@ These principles apply to all non-trivial coding work in this session.
 - `/eu-ai-act-governance` - complete or refresh the conditional EU AI Act intake and evidence
 - `/audit-web-quality` - audit accessibility, performance, security, compatibility, and SEO with evidence
 - `/review-skill-security` - assess external skills before installing or enabling them
+- `/archify` - author, validate, and deliver deterministic architecture diagrams with the pinned local renderer
 
 Ponytail Lite is injected automatically by the Claude SessionStart hook.
 

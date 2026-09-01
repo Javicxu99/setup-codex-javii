@@ -8,6 +8,31 @@ This project follows semantic versioning for Git tags and GitHub releases.
 
 - No unreleased changes.
 
+## [3.2.0] - 2026-09-01
+
+### Added
+
+- Default, independently selectable `archify` component for deterministic architecture diagrams,
+  data flows, sequence diagrams, deployment views, state machines, and system inventories.
+- Provider-native `archify` skills for Codex and Claude Code plus a portable
+  `scripts/run_archify.py` entry point with an explicit Node.js 18+ readiness check.
+- Pinned MIT-licensed Archify 2.16.0 runtime, provenance/security review, showcase validation,
+  delivery receipts, and bootstrap regression coverage.
+
+### Changed
+
+- The vendored renderer uses system fonts and excludes its automatic update checker, development
+  dependencies, repository-only tests, and promotional outputs.
+- Remote brand-mark capture, preview/browser opening, and visual browser checks are opt-in; normal
+  doctor, validation, rendering, and delivery do not contact external services.
+
+### Compatibility
+
+- No existing CLI option or component changes meaning. Node.js is not installed or required by the
+  bootstrap itself; it is needed only to execute Archify after installation.
+- Diagram sources and generated HTML remain project-owned outside `third_party/archify`, so repeat
+  bootstrap runs do not overwrite them.
+
 ## [3.1.0] - 2026-08-31
 
 ### Added
